@@ -1,6 +1,7 @@
-package domain.service
+package com.gymio.domain.service
 
-import domain.model.{Event, ExerciseLog}
+import com.gymio.domain.model.{Event, ExerciseLog}
+
 
 object ExerciseLogService {
   def logCompletedExercise(event: Event)(log: ExerciseLog): ExerciseLog = {

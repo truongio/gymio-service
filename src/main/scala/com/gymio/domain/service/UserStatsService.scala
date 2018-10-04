@@ -1,6 +1,7 @@
-package domain.service
+package com.gymio.domain.service
 
-import domain.model.{Exercise, UserStats, Weight}
+import com.gymio.domain.model.{Exercise, UserStats, Weight}
+
 
 object UserStatsService {
   def calculateTrainingMax(realMax: Weight): Weight = {

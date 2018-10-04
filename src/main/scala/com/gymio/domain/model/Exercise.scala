@@ -1,4 +1,6 @@
-package domain.model
+package com.gymio.domain.model
+
+import io.circe.generic.auto._
 
 trait Exercise
 

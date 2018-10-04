@@ -1,6 +1,7 @@
-package domain.model
+package com.gymio.domain.model
+import io.circe.generic.auto._
 
-trait WeightUnit
+sealed trait WeightUnit
 
-case object Lbs
-case object Kg
+case object Lbs extends WeightUnit
+case object Kg extends WeightUnit
