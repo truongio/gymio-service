@@ -24,9 +24,9 @@ object GymioWebServer extends IOApp {
       for {
         e <- req.as[Event]
         res <- {
-          log = log
+          log += log
             .get(userId)
-            .fold(log + (userId -> ExerciseLog(List(e))))(l => log + (userId -> logExercise(e)(l)))
+            .fold(userId -> ExerciseLog(List(e)))(l => userId -> logExercise(e)(l))
           Ok(log.asJson)
         }
       } yield res
