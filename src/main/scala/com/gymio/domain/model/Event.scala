@@ -11,7 +11,7 @@ object Event {
   implicit val decoder: EntityDecoder[IO, Event] = jsonOf[IO, Event]
 }
 
-case class BenchSetCompleted(reps: Int, weight: Weight)    extends Event
-case class SquatSetCompleted(reps: Int, weight: Weight)    extends Event
-case class DeadliftSetCompleted(reps: Int, weight: Weight) extends Event
-case class PressSetCompleted(reps: Int, weight: Weight)    extends Event
+case class BenchCompleted(reps: Int, weight: Weight)         extends Event
+case class SquatCompleted(reps: Int, weight: Weight)         extends Event
+case class DeadliftCompleted(reps: Int, weight: Weight)      extends Event
+case class OverheadPressCompleted(reps: Int, weight: Weight) extends Event
