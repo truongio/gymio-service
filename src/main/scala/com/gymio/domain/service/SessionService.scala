@@ -32,9 +32,7 @@ object SessionService {
       schemes  <- setSchemesByWeek.get(s.week)
       scheme   <- schemes.get(s.step._1)
       exercise <- exercisesByDay.get(s.day).map(exs => exs.apply(s.step._2))
-      res <- stats.trainingMaxes
-        .get(exercise)
-        .map(w => w.value * scheme.weightPercentage)
+      res <- stats.trainingMaxes.get(exercise).map(w => w.value * scheme.weightPercentage)
     } yield res
 
 //    Alternative way to do it below.
