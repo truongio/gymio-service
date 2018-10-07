@@ -28,9 +28,7 @@ class GymioService {
     for {
       e <- req.as[Event]
       res <- {
-        log += userId -> log
-          .get(userId)
-          .fold(ExerciseLog(List(e)))(logExercise(e))
+        log += userId -> log.get(userId).fold(ExerciseLog(List(e)))(logExercise(e))
         Ok(log.asJson)
       }
     } yield res
