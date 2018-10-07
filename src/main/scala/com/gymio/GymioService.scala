@@ -36,7 +36,7 @@ class GymioService {
     } yield res
   }
 
-  def updateLog(c: Command, userId: UUID) = {
+  private def updateLog(c: Command, userId: UUID) = {
     val exerciseLog = log.get(userId).getOrElse(ExerciseLog(List()))
     for (e <- decide(c)(exerciseLog)) {
       log += userId -> ExerciseLogService.applyEvent(e)(exerciseLog)
@@ -45,7 +45,7 @@ class GymioService {
     IO(log)
   }
 
-  def updateStore(c: Command, userId: UUID): IO[Seq[Event]] = {
+  private def updateStore(c: Command, userId: UUID): IO[Seq[Event]] = {
     val exerciseLog = log.get(userId).getOrElse(ExerciseLog(List()))
     for (e <- decide(c)(exerciseLog)) {
       eventStore = eventStore :+ e
