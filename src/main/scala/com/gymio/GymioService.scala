@@ -27,7 +27,7 @@ class GymioService {
     .orNotFound
 
 
-  private def logExerciseForUser(req: Request[IO], userId: UUID) = {
+  private def logExerciseForUser(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     for {
       c <- req.as[Command]
       _ <- updateStore(c, userId)
@@ -36,7 +36,7 @@ class GymioService {
     } yield res
   }
 
-  private def updateLog(c: Command, userId: UUID) = {
+  private def updateLog(c: Command, userId: UUID): IO[Map[UUID, ExerciseLog]] = {
     val exerciseLog = log.get(userId).getOrElse(ExerciseLog(List()))
     for (e <- decide(c)(exerciseLog)) {
       log += userId -> ExerciseLogService.applyEvent(e)(exerciseLog)
