@@ -7,14 +7,14 @@ object SessionService {
   type WeekNr = Int
   type Step   = Int
 
-  val exercisesByDay: Map[DayNr, Seq[Exercise]] =
+  val ExercisesByDay: Map[DayNr, Seq[Exercise]] =
     Map(
       1 -> List(Squat, BenchPress),
       2 -> List(Deadlift, OverheadPress),
       3 -> List(BenchPress, Squat)
     )
 
-  val setSchemesByWeek: Map[WeekNr, Map[Step, SetScheme]] =
+  val SetSchemesByWeek: Map[WeekNr, Map[Step, SetScheme]] =
     Map(
       1 -> Map(1 -> SetScheme(5, 0.65),
                2 -> SetScheme(5, 0.75),
@@ -29,9 +29,9 @@ object SessionService {
 
   def calculateWeightForScheme(stats: UserStats)(s: Session): Option[Double] = {
     for {
-      schemes  <- setSchemesByWeek.get(s.week)
+      schemes  <- SetSchemesByWeek.get(s.week)
       scheme   <- schemes.get(s.step._1)
-      exercise <- exercisesByDay.get(s.day).map(exs => exs.apply(s.step._2))
+      exercise <- ExercisesByDay.get(s.day).map(exs => exs.apply(s.step._2))
       res <- stats.trainingMaxes.get(exercise).map(w => w.value * scheme.weightPercentage)
     } yield res
 
