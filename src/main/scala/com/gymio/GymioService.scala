@@ -26,13 +26,15 @@ class GymioService {
 
   private def logExerciseForUser(req: Request[IO],
                                  userId: UUID): IO[Response[IO]] = {
+    val userLog = log.get(userId).getOrElse(ExerciseLog(List()))
+
     for {
-      c    <- req.as[Command]
-      eLog <- IO(log.get(userId).getOrElse(ExerciseLog(List())))
-      e    <- IO.fromEither(ExerciseLogService.decide(c)(eLog))
-      _    <- updateStore(e)
-      _    <- updateLog(userId, e, eLog)
-      res  <- Ok(log.asJson)
+      c   <- req.as[Command]
+      l   <- IO(userLog)
+      e   <- IO.fromEither(ExerciseLogService.decide(c)(l))
+      _   <- updateStore(e)
+      _   <- updateLog(userId, e, l)
+      res <- Ok(log.asJson)
     } yield res
   }
 
@@ -40,8 +42,8 @@ class GymioService {
       userId: UUID,
       event: Event,
       exerciseLog: ExerciseLog): IO[Map[UUID, ExerciseLog]] = {
-    log += userId -> ExerciseLogService.applyEvent(event)(exerciseLog)
 
+    log += userId -> ExerciseLogService.applyEvent(event)(exerciseLog)
     IO(log)
   }
 
