@@ -36,5 +36,6 @@ object SessionService {
       trainingMax <- stats.trainingMaxes.get(exercise)
       weight      = Weight(trainingMax.value * scheme.weightPercentage, trainingMax.unit)
     } yield weight
+
   }
 }

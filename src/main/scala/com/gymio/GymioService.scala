@@ -30,10 +30,9 @@ class GymioService {
 
     for {
       c   <- req.as[Command]
-      l   <- IO(userLog)
-      e   <- IO.fromEither(ExerciseLogService.decide(c)(l))
+      e   <- IO.fromEither(ExerciseLogService.decide(c)(userLog))
       _   <- updateStore(e)
-      _   <- updateLog(userId, e, l)
+      _   <- updateLog(userId, e, userLog)
       res <- Ok(log.asJson)
     } yield res
   }
