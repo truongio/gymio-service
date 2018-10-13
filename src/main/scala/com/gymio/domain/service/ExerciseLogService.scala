@@ -5,16 +5,16 @@ import com.gymio.domain.model._
 object ExerciseLogService {
   def decide(cmd: Command)(log: ExerciseLog): Either[Throwable, Event] = {
     cmd match {
-      case CompleteBench(reps, weight)         => Right(BenchCompleted(reps, weight))
+      case CompleteBenchPress(reps, weight)    => Right(BenchCompleted(reps, weight))
       case CompleteSquat(reps, weight)         => Right(SquatCompleted(reps, weight))
       case CompleteDeadlift(reps, weight)      => Right(DeadliftCompleted(reps, weight))
       case CompleteOverheadPress(reps, weight) => Right(OverheadPressCompleted(reps, weight))
-      case _                                   => Left(new IllegalArgumentException())
     }
   }
 
   def applyEvent(evt: Event)(log: ExerciseLog): ExerciseLog = {
-    log.copy(exercises = log.exercises :+ evt)
+    val oldExercises = log.exercises
+    log.copy(exercises = oldExercises :+ evt)
   }
 
   def replay(events: List[Event])(initialLog: ExerciseLog): ExerciseLog = {

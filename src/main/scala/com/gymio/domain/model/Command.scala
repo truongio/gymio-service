@@ -11,7 +11,7 @@ object Command {
   implicit val decoder: EntityDecoder[IO, Command] = jsonOf[IO, Command]
 }
 
-case class CompleteBench(reps: Int, weight: Weight)         extends Command
+case class CompleteBenchPress(reps: Int, weight: Weight)    extends Command
 case class CompleteSquat(reps: Int, weight: Weight)         extends Command
 case class CompleteDeadlift(reps: Int, weight: Weight)      extends Command
 case class CompleteOverheadPress(reps: Int, weight: Weight) extends Command

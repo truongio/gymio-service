@@ -1,15 +1,16 @@
 package com.gymio
 
 import java.util.UUID
+
 import cats.data.Kleisli
 import cats.effect._
 import com.gymio.domain.model._
 import com.gymio.domain.service.ExerciseLogService
+import io.circe.generic.auto._
+import io.circe.syntax._
 import org.http4s.circe._
 import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Request, Response}
-import io.circe.generic.auto._
-import io.circe.syntax._
 
 class GymioService {
   var log: Map[UUID, ExerciseLog] = Map()
@@ -24,8 +25,7 @@ class GymioService {
     }
     .orNotFound
 
-  private def logExerciseForUser(req: Request[IO],
-                                 userId: UUID): IO[Response[IO]] = {
+  def logExerciseForUser(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     val userLog = log.get(userId).getOrElse(ExerciseLog(List()))
 
     for {
@@ -38,16 +38,13 @@ class GymioService {
     } yield res
   }
 
-  private def updateLog(
-      userId: UUID,
-      event: Event,
-      exerciseLog: ExerciseLog): IO[Map[UUID, ExerciseLog]] = {
+  def updateLog(userId: UUID, event: Event, exerciseLog: ExerciseLog): IO[Map[UUID, ExerciseLog]] = {
 
     log += userId -> ExerciseLogService.applyEvent(event)(exerciseLog)
     IO(log)
   }
 
-  private def updateStore(event: Event): IO[Seq[Event]] = {
+  def updateStore(event: Event): IO[Seq[Event]] = {
     eventStore = eventStore :+ event
     IO(eventStore)
   }
