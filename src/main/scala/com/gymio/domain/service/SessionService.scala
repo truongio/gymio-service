@@ -27,14 +27,14 @@ object SessionService {
                3 -> Scheme(1, 0.95))
     )
 
-  def calculateWeightForScheme(stats: UserStats)(s: Session): Option[Double] = {
+  def calculateWeightForScheme(stats: UserStats)(s: Session): Option[Weight] = {
     for {
       schemes     <- SchemesByWeek.get(s.week)
       scheme      <- schemes.get(s.step._1)
       exercises   <- ExercisesByDay.get(s.day)
       exercise    <- exercises.lift(s.step._2)
       trainingMax <- stats.trainingMaxes.get(exercise)
-      weight      <- trainingMax.value * scheme.weightPercentage
+      weight      = Weight(trainingMax.value * scheme.weightPercentage, trainingMax.unit)
     } yield weight
   }
 }
