@@ -26,15 +26,24 @@ object WorkoutService {
                Set3 -> Scheme(1, 0.95))
     )
 
-  def calculateWeightForScheme(stats: UserStats)(s: Workout): Option[Weight] = {
+  def calculateWeightForScheme(stats: UserStats)(w: Workout): Option[Weight] = {
     for {
-      schemes     <- SchemesByWeek.get(s.week)
-      scheme      <- schemes.get(s.step._1)
-      exercises   <- ExercisesByDay.get(s.day)
-      exercise    <- exercises.find(_ == s.step._2)
+      schemes     <- SchemesByWeek.get(w.week)
+      scheme      <- schemes.get(w.step._1)
+      exercises   <- ExercisesByDay.get(w.day)
+      exercise    <- exercises.find(_ == w.step._2)
       trainingMax <- stats.trainingMaxes.get(exercise)
       weight      = Weight(trainingMax.value * scheme.weightPercentage, trainingMax.unit)
     } yield weight
+  }
 
+  def getNextWorkout(workout: Workout): Workout = {
+    if (workout.week == 3) {
+      workout.copy(week = 1, day = 1)
+    } else if (workout.day == 3) {
+      workout.copy(week = workout.week + 1, day = 1)
+    } else {
+      workout.copy(day = workout.day + 1)
+    }
   }
 }
