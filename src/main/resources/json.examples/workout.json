@@ -1,0 +1,68 @@
+{
+  "workout": {
+    "id": "d6b08872-9228-4578-9c21-097f2e986195",
+    "userId": "d6b08872-9228-4578-9c21-097f2e986195",
+    "day": 1,
+    "week": 1,
+    "completedExercises": [
+      {
+        "exercise": "BenchPress",
+        "events": [
+          {
+            "eventType": "BenchPressCompleted",
+            "reps": 5,
+            "weight": {
+              "value": 100,
+              "unit": "Kg"
+            }
+          },
+          {
+            "eventType": "BenchPressCompleted",
+            "reps": 5,
+            "weight": {
+              "value": 100,
+              "unit": "Kg"
+            }
+          },
+          {
+            "eventType": "BenchPressCompleted",
+            "reps": 8,
+            "weight": {
+              "value": 100,
+              "unit": "Kg"
+            }
+          }
+        ]
+      },
+      {
+        "exercise": "Squat",
+        "events": [
+          {
+            "eventType": "SquatCompleted",
+            "reps": 5,
+            "weight": {
+              "value": 60,
+              "unit": "Kg"
+            }
+          },
+          {
+            "eventType": "SquatCompleted",
+            "reps": 5,
+            "weight": {
+              "value": 60,
+              "unit": "Kg"
+            }
+          },
+          {
+            "eventType": "SquatCompleted",
+            "reps": 6,
+            "weight": {
+              "value": 60,
+              "unit": "Kg"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
