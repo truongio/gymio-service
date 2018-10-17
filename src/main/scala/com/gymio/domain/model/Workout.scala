@@ -6,7 +6,7 @@ import io.circe.generic.auto._
 import io.circe.generic.extras.{Configuration, semiauto}
 
 case class Workout(
-    workoutId: Int,
+    workoutId: UUID,
     userId: UUID,
     day: Int,
     week: Int,

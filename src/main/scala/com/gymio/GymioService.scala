@@ -1,6 +1,7 @@
 package com.gymio
 
 import java.util.UUID
+import java.util.UUID.randomUUID
 import cats.data.Kleisli
 import cats.effect._
 import com.gymio.domain.model._
@@ -34,9 +35,14 @@ class GymioService {
   }
 
   def startWorkout(userId: UUID): IO[Response[IO]] = {
-    val lastWorkout = workoutStore.getOrElse(userId, List(Workout(1, userId, 3, 0, List()))).last
-    activeWorkout = Map(userId -> WorkoutService.getNextWorkout(lastWorkout))
-    Accepted(activeWorkout.asJson)
+    workoutStore
+      .getOrElse(userId, List(Workout(randomUUID, userId, 3, 0, List())))
+      .lastOption
+      .map { last =>
+        activeWorkout += userId -> WorkoutService.getNextWorkout(last)
+        Accepted(activeWorkout.asJson)
+      }
+      .getOrElse(InternalServerError())
   }
 
   def logExerciseForWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
