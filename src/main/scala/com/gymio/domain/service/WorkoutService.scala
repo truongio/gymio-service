@@ -57,11 +57,11 @@ object WorkoutService {
 
   def getNextWorkout(workout: Workout): Workout = {
     if (workout.week == 3) {
-      workout.copy(week = 1, day = 1)
+      workout.copy(week = 1, day = 1, completedExercises = List())
     } else if (workout.day == 3) {
-      workout.copy(week = workout.week + 1, day = 1)
+      workout.copy(week = workout.week + 1, day = 1, completedExercises = List())
     } else {
-      workout.copy(day = workout.day + 1)
+      workout.copy(day = workout.day + 1, completedExercises = List())
     }
   }
 
