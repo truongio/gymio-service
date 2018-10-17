@@ -1,14 +1,15 @@
 package com.gymio.domain.model
 
-import io.circe.Decoder
 import io.circe.generic.auto._
 import io.circe.generic.extras.{Configuration, semiauto}
+import io.circe.{Decoder, Encoder}
 
 sealed trait Event
 
 object Event {
   implicit val config: Configuration = Configuration.default.withDiscriminator("eventType")
   implicit val decoder: Decoder[Event] = semiauto.deriveDecoder
+  implicit val encoder: Encoder[Event] = semiauto.deriveEncoder
 }
 
 case class BenchCompleted(

@@ -19,7 +19,7 @@ class GymioService {
 
   val gymioService: Kleisli[IO, Request[IO], Response[IO]] = HttpRoutes
     .of[IO] {
-      case GET -> Root / "workout" / UUIDVar(userId) =>
+      case GET -> Root / "workout" / "active"/ UUIDVar(userId) =>
         getActiveWorkout(userId)
       case req @ POST -> Root / "workout" / UUIDVar(userId) / "start" =>
         startWorkout(userId)
