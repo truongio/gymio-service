@@ -64,4 +64,13 @@ object WorkoutService {
       workout.copy(day = workout.day + 1)
     }
   }
+
+  def decide(cmd: Command): Either[Throwable, Event] = {
+    cmd match {
+      case CompleteBenchPress(reps, weight)    => Right(BenchCompleted(reps, weight))
+      case CompleteSquat(reps, weight)         => Right(SquatCompleted(reps, weight))
+      case CompleteDeadlift(reps, weight)      => Right(DeadliftCompleted(reps, weight))
+      case CompleteOverheadPress(reps, weight) => Right(OverheadPressCompleted(reps, weight))
+    }
+  }
 }

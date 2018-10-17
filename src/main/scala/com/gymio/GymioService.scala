@@ -1,16 +1,15 @@
 package com.gymio
 
 import java.util.UUID
-
 import cats.data.Kleisli
 import cats.effect._
 import com.gymio.domain.model._
 import com.gymio.domain.service.{ExerciseLogService, WorkoutService}
-import io.circe.generic.auto._
-import io.circe.syntax._
 import org.http4s.circe._
 import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Request, Response}
+import io.circe.generic.auto._
+import io.circe.syntax._
 
 class GymioService {
   var log: Map[UUID, ExerciseLog]           = Map()
@@ -24,23 +23,32 @@ class GymioService {
         Ok(log.asJson)
       case req @ POST -> Root / "log" / UUIDVar(userId) / "add" =>
         logExerciseForUser(req, userId)
-      case req @ POST -> Root / "workout" / UUIDVar(userId) / "complete" =>
-        completeWorkout(req, userId)
       case GET -> Root / "workout" / UUIDVar(userId) =>
         getActiveWorkout(userId)
       case req @ POST -> Root / "workout" / UUIDVar(userId) / "start" =>
         setActiveWorkout(userId)
+      case req @ POST -> Root / "workout" / UUIDVar(userId) / "log" =>
+        logExerciseForWorkout(req, userId)
+      case req @ POST -> Root / "workout" / UUIDVar(userId) / "complete" =>
+        completeWorkout(req, userId)
   }
     .orNotFound
 
   def getActiveWorkout(userId: UUID): IO[Response[IO]] = {
-    val workout = activeWorkout.get(userId)
-    if (workout.isDefined) {
-      Ok(workout.asJson)
-    } else {
-      NotFound()
-    }
+    activeWorkout.get(userId).map(w => Ok(w.asJson)).getOrElse(NotFound())
   }
+
+  def logExerciseForWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
+    activeWorkout.get(userId).map { w =>
+      for {
+        c   <- req.as[Command]
+        e   <- IO.fromEither(WorkoutService.decide(c))
+        _   <- updateActiveWorkout(userId, e)(w)
+        res <- Accepted(activeWorkout.asJson)
+      } yield res
+    }.getOrElse(NotFound())
+  }
+
 
   def logExerciseForUser(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     val userLog = log.getOrElse(userId, ExerciseLog(List()))
@@ -63,6 +71,12 @@ class GymioService {
     eventStore = eventStore :+ event
     IO(eventStore)
   }
+
+  def updateActiveWorkout(userId: UUID, event: Event)(w: Workout): IO[Map[UUID, Workout]] = {
+    activeWorkout += userId -> w.copy(completedExercises = w.completedExercises :+ event)
+    IO(activeWorkout)
+  }
+
 
   def completeWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     updateWorkoutStore(userId)
