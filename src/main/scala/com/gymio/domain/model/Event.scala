@@ -1,14 +1,14 @@
 package com.gymio.domain.model
 
-import cats.effect.IO
-import org.http4s.EntityDecoder
-import org.http4s.circe.jsonOf
-import io.circe.generic.auto._
+import io.circe.Decoder
+import io.circe.generic.extras.Configuration
+import io.circe.generic.semiauto
 
 sealed trait Event
 
 object Event {
-  implicit val decoder: EntityDecoder[IO, Event] = jsonOf[IO, Event]
+  implicit val config: Configuration = Configuration.default.withDiscriminator("eventType")
+  implicit val decoder: Decoder[Event] = semiauto.deriveDecoder
 }
 
 case class BenchCompleted(

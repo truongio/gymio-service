@@ -1,14 +1,15 @@
 package com.gymio.domain.model
 
-import cats.effect.IO
+import io.circe.Decoder
 import io.circe.generic.auto._
-import org.http4s.EntityDecoder
-import org.http4s.circe.jsonOf
+import io.circe.generic.extras.Configuration
+import io.circe.generic.semiauto
 
 sealed trait Command
 
 object Command {
-  implicit val decoder: EntityDecoder[IO, Command] = jsonOf[IO, Command]
+  implicit val config: Configuration = Configuration.default.withDiscriminator("eventType")
+  implicit val decoder: Decoder[Command] = semiauto.deriveDecoder
 }
 
 case class CompleteBenchPress(reps: Int, weight: Weight)    extends Command
