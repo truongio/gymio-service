@@ -55,13 +55,13 @@ object WorkoutService {
     } yield weight
   }
 
-  def getNextWorkout(workout: Workout): Workout = {
-    if (workout.week == 3) {
-      workout.copy(week = 1, day = 1, completedExercises = List())
-    } else if (workout.day == 3) {
-      workout.copy(week = workout.week + 1, day = 1, completedExercises = List())
+  def nextWorkout(w: Workout): Workout = {
+    if (w.week == 3) {
+      w.copy(week = 1, day = 1, completedExercises = List())
+    } else if (w.day == 3) {
+      w.copy(week = w.week + 1, day = 1, completedExercises = List())
     } else {
-      workout.copy(day = workout.day + 1, completedExercises = List())
+      w.copy(day = w.day + 1, completedExercises = List())
     }
   }
 
@@ -74,12 +74,12 @@ object WorkoutService {
     }
   }
 
-  def applyEvent(evt: Event)(w: Workout): Workout = {
+  def apply(evt: Event)(w: Workout): Workout = {
     val oldExercises = w.completedExercises
     w.copy(completedExercises = oldExercises :+ evt)
   }
 
   def replay(events: List[Event])(initWorkout: Workout): Workout = {
-    events.foldLeft(initWorkout)((w, e) => applyEvent(e)(w))
+    events.foldLeft(initWorkout)((w, e) => apply(e)(w))
   }
 }

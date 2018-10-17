@@ -2,16 +2,17 @@ package com.gymio
 
 import java.util.UUID
 import java.util.UUID.randomUUID
+
 import cats.data.Kleisli
 import cats.effect._
 import com.gymio.domain.model._
 import com.gymio.domain.service.WorkoutService
+import io.circe.generic.auto._
+import io.circe.syntax._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.circe._
 import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Request, Response}
-import io.circe.generic.auto._
-import io.circe.syntax._
 
 class GymioService {
   var workoutStore: Map[UUID, Seq[Workout]] = Map()
@@ -21,23 +22,27 @@ class GymioService {
     .of[IO] {
       case GET -> Root / "workout" / UUIDVar(userId) =>
         getWorkout(userId)
+
       case GET -> Root / "workout" / "active" / UUIDVar(userId) =>
         getActiveWorkout(userId)
-      case req @ POST -> Root / "workout" / UUIDVar(userId) / "start" =>
+
+      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "start" =>
         startWorkout(userId)
-      case req @ POST -> Root / "workout" / UUIDVar(userId) / "log" =>
+
+      case req @ POST -> Root / "workout" / "active"/ UUIDVar(userId) / "log" =>
         logExerciseForWorkout(req, userId)
-      case req @ POST -> Root / "workout" / UUIDVar(userId) / "complete" =>
+
+      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "complete" =>
         completeWorkout(req, userId)
   }
     .orNotFound
 
   def getWorkout(userId: UUID): IO[Response[IO]] = {
-    workoutStore.get(userId).map(w => Ok(w.asJson)).getOrElse(NotFound())
+    workoutStore.get(userId).map(w => Ok(w.asJson)).getOrElse(NoContent())
   }
 
   def getActiveWorkout(userId: UUID): IO[Response[IO]] = {
-    activeWorkout.get(userId).map(w => Ok(w.asJson)).getOrElse(NotFound())
+    activeWorkout.get(userId).map(w => Ok(w.asJson)).getOrElse(NoContent())
   }
 
   def startWorkout(userId: UUID): IO[Response[IO]] = {
@@ -45,7 +50,7 @@ class GymioService {
       .getOrElse(userId, List(Workout(randomUUID, userId, 3, 0, List())))
       .lastOption
       .map { last =>
-        activeWorkout += userId -> WorkoutService.getNextWorkout(last)
+        activeWorkout += userId -> WorkoutService.nextWorkout(last)
         Accepted(activeWorkout.asJson)
       }
       .getOrElse(InternalServerError())
@@ -59,12 +64,12 @@ class GymioService {
         _   <- updateActiveWorkout(userId, e)(w)
         res <- Accepted(activeWorkout.asJson)
       } yield res
-    }.getOrElse(NotFound())
+    }.getOrElse(NoContent())
   }
 
 
   def updateActiveWorkout(userId: UUID, event: Event)(w: Workout): IO[Map[UUID, Workout]] = {
-    activeWorkout += userId -> WorkoutService.applyEvent(event)(w)
+    activeWorkout += userId -> WorkoutService.apply(event)(w)
     IO(activeWorkout)
   }
 
