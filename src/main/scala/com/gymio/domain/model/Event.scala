@@ -1,8 +1,8 @@
 package com.gymio.domain.model
 
 import io.circe.Decoder
-import io.circe.generic.extras.Configuration
-import io.circe.generic.semiauto
+import io.circe.generic.auto._
+import io.circe.generic.extras.{Configuration, semiauto}
 
 sealed trait Event
 

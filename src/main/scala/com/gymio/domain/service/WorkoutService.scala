@@ -73,4 +73,13 @@ object WorkoutService {
       case CompleteOverheadPress(reps, weight) => Right(OverheadPressCompleted(reps, weight))
     }
   }
+
+  def applyEvent(evt: Event)(w: Workout): Workout = {
+    val oldExercises = w.completedExercises
+    w.copy(completedExercises = oldExercises :+ evt)
+  }
+
+  def replay(events: List[Event])(initWorkout: Workout): Workout = {
+    events.foldLeft(initWorkout)((w, e) => applyEvent(e)(w))
+  }
 }

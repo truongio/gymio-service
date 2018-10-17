@@ -52,13 +52,13 @@ class GymioService {
 
 
   def updateActiveWorkout(userId: UUID, event: Event)(w: Workout): IO[Map[UUID, Workout]] = {
-    activeWorkout += userId -> w.copy(completedExercises = w.completedExercises :+ event)
+    activeWorkout += userId -> WorkoutService.applyEvent(event)(w)
     IO(activeWorkout)
   }
 
   def updateWorkoutStore(userId: UUID): Unit = {
     activeWorkout.get(userId) foreach { s =>
-      workoutStore += userId -> workoutStore.getOrElse(userId, List()) :+ s
+      workoutStore += userId -> (workoutStore.getOrElse(userId, List()) :+ s)
     }
   }
 

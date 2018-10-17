@@ -1,10 +1,9 @@
 package com.gymio.domain.model
 
 import java.util.UUID
-import cats.effect.IO
-import org.http4s.EntityDecoder
-import org.http4s.circe.jsonOf
+import io.circe.Decoder
 import io.circe.generic.auto._
+import io.circe.generic.extras.{Configuration, semiauto}
 
 case class Workout(
     workoutId: Int,
@@ -15,5 +14,6 @@ case class Workout(
 )
 
 object Workout {
-  implicit val decoder: EntityDecoder[IO, Workout] = jsonOf[IO, Workout]
+  implicit val config: Configuration = Configuration.default
+  implicit val decoder: Decoder[Workout] = semiauto.deriveDecoder
 }
