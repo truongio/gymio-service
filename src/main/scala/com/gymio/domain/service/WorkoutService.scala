@@ -26,7 +26,7 @@ object WorkoutService {
                3 -> Scheme(1, 0.95))
     )
 
-  def progressNonCompletedExercise(w: Workout, exercises: Seq[Exercise]): Option[Int] = {
+  def progressOnFirstIncompleteExercise(w: Workout, exercises: Seq[Exercise]): Option[Int] = {
     val mappedExercises = exercises.map {
       case Squat         => "SquatCompleted"
       case BenchPress    => "BenchPressCompleted"
@@ -44,14 +44,14 @@ object WorkoutService {
       .map(e => e._2.size)
   }
 
-  def calculateWeightToLift(exercise: Exercise, stats: UserStats)(w: Workout): Option[Weight] = {
+  def weightToLift(exercise: Exercise, stats: UserStats)(w: Workout): Option[Weight] = {
     for {
-      schemes         <- SchemesByWeek.get(w.week)
-      exercises       <- ExercisesByDay.get(w.day)
-      whereAmI        <- progressNonCompletedExercise(w, exercises)
-      scheme          <- schemes.get(whereAmI)
-      trainingMax     <- stats.trainingMaxes.get(exercise)
-      weight          = Weight(trainingMax.value * scheme.weightPercentage, trainingMax.unit)
+      schemes   <- SchemesByWeek.get(w.week)
+      exercises <- ExercisesByDay.get(w.day)
+      progress  <- progressOnFirstIncompleteExercise(w, exercises)
+      scheme    <- schemes.get(progress)
+      tM        <- stats.trainingMaxes.get(exercise)
+      weight = Weight(tM.value * scheme.weightPercentage, tM.unit)
     } yield weight
   }
 
@@ -65,8 +65,8 @@ object WorkoutService {
     }
   }
 
-  def decide(cmd: Command): Either[Throwable, Event] = {
-    cmd match {
+  def decide(command: Command): Either[Throwable, Event] = {
+    command match {
       case CompleteBenchPress(reps, weight)    => Right(BenchCompleted(reps, weight))
       case CompleteSquat(reps, weight)         => Right(SquatCompleted(reps, weight))
       case CompleteDeadlift(reps, weight)      => Right(DeadliftCompleted(reps, weight))
@@ -74,9 +74,9 @@ object WorkoutService {
     }
   }
 
-  def apply(evt: Event)(w: Workout): Workout = {
+  def apply(e: Event)(w: Workout): Workout = {
     val oldExercises = w.completedExercises
-    w.copy(completedExercises = oldExercises :+ evt)
+    w.copy(completedExercises = oldExercises :+ e)
   }
 
   def replay(events: List[Event])(initWorkout: Workout): Workout = {

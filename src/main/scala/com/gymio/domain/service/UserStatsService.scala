@@ -13,5 +13,3 @@ object UserStatsService {
     stats.copy(trainingMaxes = newMaxes)
   }
 }
-
-

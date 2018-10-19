@@ -21,10 +21,10 @@ class GymioService {
   val gymioService: Kleisli[IO, Request[IO], Response[IO]] = HttpRoutes
     .of[IO] {
       case GET -> Root / "workout" / UUIDVar(userId) =>
-        getWorkout(userId)
+        workout(userId)
 
       case GET -> Root / "workout" / "active" / UUIDVar(userId) =>
-        getActiveWorkout(userId)
+        activeWorkout(userId)
 
       case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "start" =>
         startWorkout(userId)
@@ -37,11 +37,11 @@ class GymioService {
   }
     .orNotFound
 
-  def getWorkout(userId: UUID): IO[Response[IO]] = {
+  def workout(userId: UUID): IO[Response[IO]] = {
     workoutStore.get(userId).map(w => Ok(w.asJson)).getOrElse(NoContent())
   }
 
-  def getActiveWorkout(userId: UUID): IO[Response[IO]] = {
+  def activeWorkout(userId: UUID): IO[Response[IO]] = {
     activeWorkout.get(userId).map(w => Ok(w.asJson)).getOrElse(NoContent())
   }
 
