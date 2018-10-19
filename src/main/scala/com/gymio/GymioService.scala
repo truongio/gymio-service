@@ -5,6 +5,7 @@ import java.util.UUID.randomUUID
 
 import cats.data.Kleisli
 import cats.effect._
+import com.gymio.domain.infrastructure.WorkoutRepo
 import com.gymio.domain.model._
 import com.gymio.domain.service.WorkoutService
 import io.circe.generic.auto._
@@ -14,7 +15,7 @@ import org.http4s.circe._
 import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Request, Response}
 
-class GymioService {
+class GymioService(repo: WorkoutRepo) {
   var workoutStore: Map[UUID, Seq[Workout]] = Map()
   var activeWorkout: Map[UUID, Workout]     = Map()
 
