@@ -33,7 +33,7 @@ class WorkoutAPI(repo: WorkoutRepo) {
       case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "log" =>
         logExerciseForWorkout(req, userId)
 
-      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "complete" =>
+      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "finish" =>
         completeWorkout(req, userId)
     }
     .orNotFound
