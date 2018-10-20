@@ -10,6 +10,7 @@ import io.circe.{Decoder, Encoder}
 case class Workout(
     id: UUID = randomUUID,
     userId: UUID = randomUUID,
+    status: Status = Status.Active,
     day: Int = 1,
     week: Int = 1,
     completedExercises: Seq[Event] = List()

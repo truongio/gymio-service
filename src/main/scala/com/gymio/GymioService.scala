@@ -4,10 +4,13 @@ import java.util.UUID
 import java.util.UUID.randomUUID
 
 import cats.data.Kleisli
+import cats.effect.IO.{fromEither, fromFuture, pure}
 import cats.effect._
 import com.gymio.domain.infrastructure.WorkoutRepo
+import com.gymio.domain.model.Status.Active
 import com.gymio.domain.model._
 import com.gymio.domain.service.WorkoutService
+import com.gymio.domain.service.WorkoutService.{decide, nextWorkout}
 import io.circe.generic.auto._
 import io.circe.syntax._
 import org.http4s.circe.CirceEntityDecoder._
@@ -16,73 +19,83 @@ import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Request, Response}
 
 class GymioService(repo: WorkoutRepo) {
-  var workoutStore: Map[UUID, Seq[Workout]] = Map()
-  var activeWorkout: Map[UUID, Workout]     = Map()
-
   val gymioService: Kleisli[IO, Request[IO], Response[IO]] = HttpRoutes
     .of[IO] {
       case GET -> Root / "workout" / UUIDVar(userId) =>
-        workout(userId)
+        workouts(userId)
 
       case GET -> Root / "workout" / "active" / UUIDVar(userId) =>
-        activeWorkout(userId)
+        getActiveWorkout(userId)
 
-      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "start" =>
+      case POST -> Root / "workout" / "active" / UUIDVar(userId) / "start" =>
         startWorkout(userId)
 
-      case req @ POST -> Root / "workout" / "active"/ UUIDVar(userId) / "log" =>
+      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "log" =>
         logExerciseForWorkout(req, userId)
 
       case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "complete" =>
         completeWorkout(req, userId)
-  }
+    }
     .orNotFound
 
-  def workout(userId: UUID): IO[Response[IO]] = {
-    workoutStore.get(userId).map(w => Ok(w.asJson)).getOrElse(NoContent())
+  def workouts(userId: UUID): IO[Response[IO]] = {
+    val f = repo find userId
+    for {
+      ws  <- fromFuture(pure(f))
+      res <- Ok(ws.asJson)
+    } yield res
+
   }
 
-  def activeWorkout(userId: UUID): IO[Response[IO]] = {
-    activeWorkout.get(userId).map(w => Ok(w.asJson)).getOrElse(NoContent())
+  def getActiveWorkout(userId: UUID): IO[Response[IO]] = {
+    val f = repo find userId
+    for {
+      ws  <- fromFuture(pure(f))
+      res <- ws.filter(_.status == Active).lastOption.map(w => Ok(w.asJson)).getOrElse(NoContent())
+    } yield res
   }
 
   def startWorkout(userId: UUID): IO[Response[IO]] = {
-    workoutStore
-      .getOrElse(userId, List(Workout(randomUUID, userId, 3, 0, List())))
-      .lastOption
-      .map { last =>
-        activeWorkout += userId -> WorkoutService.nextWorkout(last)
-        Accepted(activeWorkout.asJson)
-      }
-      .getOrElse(InternalServerError())
+    val f        = repo find userId
+    val defaultW = Workout(randomUUID, userId, Active, 1, 1, List())
+    for {
+      ws <- fromFuture(pure(f))
+      w = ws.lastOption.map(nextWorkout).getOrElse(defaultW)
+      _  <- saveWorkout(userId)(w)
+      res <- Ok(w.asJson)
+    } yield res
   }
 
-  def logExerciseForWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
-    activeWorkout.get(userId).map { w =>
-      for {
-        c   <- req.as[Command]
-        e   <- IO.fromEither(WorkoutService.decide(c))
-        _   <- updateActiveWorkout(userId, e)(w)
-        res <- Accepted(activeWorkout.asJson)
-      } yield res
-    }.getOrElse(NoContent())
+  def logExerciseForWorkout(req: Request[IO],
+                            userId: UUID): IO[Response[IO]] = {
+    val f = repo find userId
+    for {
+      ws <- fromFuture(pure(f))
+      w = ws.filter(_.status == Active).last
+      c   <- req.as[Command]
+      e   <- fromEither(decide(c))
+      saved   <- saveActiveWorkout(userId, e)(w)
+      res <- Accepted(saved.asJson)
+    } yield res
   }
 
-
-  def updateActiveWorkout(userId: UUID, event: Event)(w: Workout): IO[Map[UUID, Workout]] = {
-    activeWorkout += userId -> WorkoutService.apply(event)(w)
-    IO(activeWorkout)
+  def saveActiveWorkout(userId: UUID, event: Event)(w: Workout): IO[Workout] = {
+    val savedWorkout = repo.save(userId, WorkoutService.apply(event)(w))
+    fromFuture(pure(savedWorkout))
   }
 
-  def updateWorkoutStore(userId: UUID): Unit = {
-    activeWorkout.get(userId) foreach { s =>
-      workoutStore += userId -> (workoutStore.getOrElse(userId, List()) :+ s)
-    }
+  def saveWorkout(userId: UUID)(w: Workout): IO[Workout] = {
+    val savedWorkout = repo.save(userId, w)
+    fromFuture(pure(savedWorkout))
   }
 
   def completeWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
-    updateWorkoutStore(userId)
-    activeWorkout -= userId
-    Accepted(workoutStore.asJson)
+    val f = repo find userId
+    for {
+      ws <- fromFuture(pure(f))
+      w = ws.filter(_.status == Active).last.copy(status = Status.Completed)
+      _   <- saveWorkout(userId)(w)
+      res <- Accepted(w.asJson)
+    } yield res
   }
 }

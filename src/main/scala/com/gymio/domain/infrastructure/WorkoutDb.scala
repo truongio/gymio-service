@@ -2,10 +2,10 @@ package com.gymio.domain.infrastructure
 
 import java.util.UUID
 
+import com.gymio.domain.infrastructure.WorkoutRecord.toRecord
 import com.gymio.domain.infrastructure.common.DatabaseProfile.api._
 import com.gymio.domain.infrastructure.common.DatabaseProfileProvider
 import com.gymio.domain.model.Workout
-import io.circe.Decoder.Result
 import io.circe.Json
 import io.circe.syntax._
 import io.strongtyped.active.slick.Lens._
@@ -13,6 +13,7 @@ import io.strongtyped.active.slick.{ActiveRecord, EntityActions, Lens}
 import slick.ast.BaseTypedType
 import slick.lifted.{Rep, TableQuery, Tag}
 
+import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -30,8 +31,8 @@ object WorkoutActions extends EntityActions with DatabaseProfileProvider {
   override def $id(table: EntityTable): Rep[Id] = table.id
 
   override def idLens: Lens[Entity, Option[Id]] = {
-    lens { r: WorkoutRecord => Option(r.listingId)
-    } { (r, id) => r.copy(listingId = id.get)
+    lens { r: WorkoutRecord => Option(r.id)
+    } { (r, id) => r.copy(id = id.get)
     }
   }
 
@@ -44,40 +45,44 @@ class WorkoutPGSQLRepo(db: Database) extends WorkoutRepo {
 
   import WorkoutActions._
 
-  def save(l: Workout): Future[Workout] = {
-    val query = insert(WorkoutRecord.toRecord(l))
-    db.run(query.transactionally).map(_ => l)
+  def save(userId: UUID, l: Workout): Future[Workout] = {
+    db.run(WorkoutActions.findOptionById(l.id)).flatMap {
+      case Some(_) => db.run(update(toRecord(userId, l)))
+      case None => db.run(insert(toRecord(userId, l)))
+    }.map(_ => l)
   }
 
-  def find(id: UUID): Future[Seq[Result[Workout]]] = {
+  def find(userId: UUID): Future[Seq[Workout]] = {
     val tableQuery = TableQuery[WorkoutTable]
-    val q          = tableQuery.filter(_.id === id).result
+    val q          = tableQuery.filter(_.userId === userId).result
     val result     = db.run(q)
 
-    result.map(_.map(WorkoutRecord.toWorkout))
+    result.map(_.flatMap(WorkoutRecord.toWorkout))
   }
 }
 
 class WorkoutTable(tag: Tag) extends Table[WorkoutRecord](tag, "workout") {
 
   def id: Rep[UUID]   = column("id", O.PrimaryKey)
+  def userId: Rep[UUID]   = column("user_id")
   def data: Rep[Json] = column("data")
 
   override def * =
-    (id, data) <> ((WorkoutRecord.apply _).tupled, WorkoutRecord.unapply)
+    (id, userId, data) <> ((WorkoutRecord.apply _).tupled, WorkoutRecord.unapply)
 }
 
 case class WorkoutRecord(
-    listingId: UUID,
+    id: UUID,
+    userId: UUID,
     data: Json
 )
 
 object WorkoutRecord {
-  def toRecord(w: Workout): WorkoutRecord = {
-    WorkoutRecord(w.id, w.asJson)
+  def toRecord(userId: UUID, w: Workout): WorkoutRecord = {
+    WorkoutRecord(w.id, userId, w.asJson)
   }
 
-  def toWorkout(w: WorkoutRecord): Result[Workout] = {
-    w.data.as[Workout]
+  def toWorkout(w: WorkoutRecord): immutable.Seq[Workout] = {
+    w.data.as[Workout].toSeq
   }
 }
