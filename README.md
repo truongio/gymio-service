@@ -14,15 +14,13 @@ sbt run
 * `docker build -t gymio:latest .`
 * `docker run -it -p 8080:8080 gymio:latest`
 
-# Example routes
+## End points
 
-GET `http://localhost:8080/workout/84a07f4e-85e6-4d75-a983-e6107eeb5f2a/start`
-
-GET `http://localhost:8080/workout/active/84a07f4e-85e6-4d75-a983-e6107eeb5f2a`
-
-POST `http://localhost:8080/workout/84a07f4e-85e6-4d75-a983-e6107eeb5f2a/log`
-
-POST `http://localhost:8080/workout/84a07f4e-85e6-4d75-a983-e6107eeb5f2a/complete`
-
-GET `http://localhost:8080/workout/84a07f4e-85e6-4d75-a983-e6107eeb5f2a`
+Method | Url                             | Description
+------ | ------------------------------- | -----------
+GET    | /workout/{id}                   | All workouts
+GET    | /workout/active/{id}            | Active workout
+POST   | /workout/active/{id}/start      | Start a workout
+POST   | /workout/active/{id}/log        | Log a completed exercise to an active workout
+POST   | /workout/active/{id}/finish     | Finish an active workout
 
