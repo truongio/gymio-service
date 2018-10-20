@@ -9,7 +9,7 @@ object UserStatsService {
 
   def updateTM(exs: Exercise, w: Weight)(stats: UserStats): UserStats = {
     val oldMaxes = stats.trainingMaxes
-    val newMaxes = oldMaxes + (exs -> w)
+    val newMaxes = oldMaxes + (exs.entryName -> w)
     stats.copy(trainingMaxes = newMaxes)
   }
 }

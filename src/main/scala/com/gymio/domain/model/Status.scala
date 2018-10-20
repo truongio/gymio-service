@@ -11,5 +11,4 @@ object Status extends Enum[Status] with CirceEnum[Status] {
 
   case object Active    extends Status with UpperSnakecase
   case object Completed extends Status with UpperSnakecase
-
 }

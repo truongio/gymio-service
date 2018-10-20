@@ -16,7 +16,6 @@ import io.strongtyped.active.slick.{ActiveRecord, EntityActions, Lens}
 import slick.ast.BaseTypedType
 import slick.lifted.{Rep, TableQuery, Tag}
 
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -47,13 +46,13 @@ class WorkoutPGSQLRepo(db: Database) extends WorkoutRepo {
 
   import WorkoutActions._
 
-  def save(userId: UUID, l: Workout): Future[Workout] = {
-    db.run(WorkoutActions.findOptionById(l.id))
+  def save(userId: UUID, w: Workout): Future[Workout] = {
+    db.run(findOptionById(w.id))
       .flatMap {
-        case Some(_) => db.run(update(toRecord(userId, l)))
-        case None    => db.run(insert(toRecord(userId, l)))
+        case Some(_) => db.run(update(toRecord(userId, w)))
+        case None    => db.run(insert(toRecord(userId, w)))
       }
-      .map(_ => l)
+      .map(_ => w)
   }
 
   def find(userId: UUID): Future[Seq[Workout]] = {
@@ -73,7 +72,8 @@ class WorkoutTable(tag: Tag) extends Table[WorkoutRecord](tag, "workout") {
   def timestamp: Rep[Instant] = column("timestamp")
 
   override def * =
-    (id, userId, data, timestamp) <> ((WorkoutRecord.apply _).tupled, WorkoutRecord.unapply)
+    (id, userId, data, timestamp) <>
+      ((WorkoutRecord.apply _).tupled, WorkoutRecord.unapply)
 }
 
 case class WorkoutRecord(
@@ -88,7 +88,7 @@ object WorkoutRecord {
     WorkoutRecord(w.id, userId, w.asJson, now)
   }
 
-  def toWorkout(w: WorkoutRecord): immutable.Seq[Workout] = {
+  def toWorkout(w: WorkoutRecord): Seq[Workout] = {
     w.data.as[Workout].toSeq
   }
 }

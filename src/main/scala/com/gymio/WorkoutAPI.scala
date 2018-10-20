@@ -18,8 +18,8 @@ import org.http4s.circe._
 import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Request, Response}
 
-class GymioService(repo: WorkoutRepo) {
-  val gymioService: Kleisli[IO, Request[IO], Response[IO]] = HttpRoutes
+class WorkoutAPI(repo: WorkoutRepo) {
+  val workoutAPI: Kleisli[IO, Request[IO], Response[IO]] = HttpRoutes
     .of[IO] {
       case GET -> Root / "workout" / UUIDVar(userId) =>
         workouts(userId)
@@ -83,11 +83,6 @@ class GymioService(repo: WorkoutRepo) {
     } yield res
   }
 
-  def saveWorkout(userId: UUID)(w: Workout): IO[Workout] = {
-    val savedWorkout = repo.save(userId, w)
-    fromFuture(pure(savedWorkout))
-  }
-
   def completeWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     val f = repo find userId
     for {
@@ -96,5 +91,10 @@ class GymioService(repo: WorkoutRepo) {
       _   <- saveWorkout(userId)(w)
       res <- Accepted(w.asJson)
     } yield res
+  }
+
+  def saveWorkout(userId: UUID)(w: Workout): IO[Workout] = {
+    val savedWorkout = repo.save(userId, w)
+    fromFuture(pure(savedWorkout))
   }
 }

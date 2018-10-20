@@ -1,5 +1,6 @@
 package com.gymio.domain.service
 
+import com.gymio.domain.model.Exercise._
 import com.gymio.domain.model._
 
 object WorkoutService {
@@ -50,7 +51,7 @@ object WorkoutService {
       exercises <- ExercisesByDay.get(w.day)
       progress  <- progressOnFirstIncompleteExercise(w, exercises)
       scheme    <- schemes.get(progress)
-      tM        <- stats.trainingMaxes.get(exercise)
+      tM        <- stats.trainingMaxes.get(exercise.entryName)
       weight = Weight(tM.value * scheme.weightPercentage, tM.unit)
     } yield weight
   }

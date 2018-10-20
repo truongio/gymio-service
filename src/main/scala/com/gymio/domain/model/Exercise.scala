@@ -1,8 +1,17 @@
 package com.gymio.domain.model
+import enumeratum.EnumEntry.UpperSnakecase
+import enumeratum.{CirceEnum, Enum, EnumEntry}
+import io.circe.generic.auto._
 
-sealed trait Exercise
+import scala.collection.immutable
 
-case object BenchPress    extends Exercise
-case object Deadlift      extends Exercise
-case object Squat         extends Exercise
-case object OverheadPress extends Exercise
+sealed trait Exercise extends EnumEntry
+
+object Exercise extends Enum[Exercise] with CirceEnum[Exercise] {
+  val values: immutable.IndexedSeq[Exercise] = findValues
+
+  case object BenchPress    extends Exercise with UpperSnakecase
+  case object Squat         extends Exercise with UpperSnakecase
+  case object OverheadPress extends Exercise with UpperSnakecase
+  case object Deadlift      extends Exercise with UpperSnakecase
+}
