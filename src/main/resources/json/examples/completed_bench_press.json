@@ -1,0 +1,8 @@
+{
+  "eventType": "CompleteBenchPress",
+  "reps": 5,
+  "weight": {
+    "value": 50,
+    "unit": "kg"
+  }
+}

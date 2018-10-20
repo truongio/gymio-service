@@ -1,0 +1,12 @@
+{
+  "trainingMaxes": {
+    "BenchPress": {
+      "value": 120,
+      "unit": "kg"
+    }
+  },
+  "bodyWeight": {
+    "value": 120,
+    "unit": "kg"
+  }
+}
