@@ -18,13 +18,13 @@ sbt run
 
 ### End points
 
-Method | Url                             | Description
------- | ------------------------------- | -----------
-GET    | /workout/{id}                   | All workouts
-GET    | /workout/active/{id}            | Active workout
-POST   | /workout/active/{id}/start      | Start a workout
-POST   | /workout/active/{id}/log        | Log a completed exercise to an active workout
-POST   | /workout/active/{id}/finish     | Finish an active workout
-GET    | /user-stats/{id}                | Stats for user
-POST   | /user-stats/{id}                | Save stats for user
+Method | Url                                 | Description
+------ | ----------------------------------- | -----------
+GET    | /workout/{userId}                   | All workouts
+GET    | /workout/active/{userId}            | Active workout
+POST   | /workout/active/{userId}/start      | Start a workout
+POST   | /workout/active/{userId}/log        | Log a completed exercise to an active workout
+POST   | /workout/active/{userId}/finish     | Finish an active workout
+GET    | /user-stats/{userId}                | Stats for user
+POST   | /user-stats/{userId}                | Save stats for user
 
