@@ -1,22 +1,22 @@
 # Gymio
 
-## Pre requirements
+### Requirements
 
 * `java`
 * `scala`
 * `sbt` (https://www.scala-sbt.org/index.html)
 
-## Run
+### Run
 
 To start HTTP server, do
 ```
 sbt run
 ```
-## Run in Docker
+### Run in Docker
 * `docker build -t gymio:latest .`
 * `docker run -it -p 8080:8080 gymio:latest`
 
-## End points
+### End points
 
 Method | Url                             | Description
 ------ | ------------------------------- | -----------
