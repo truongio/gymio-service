@@ -1,4 +1,4 @@
-package com.gymio.domain.infrastructure.common
+package com.gymio.db.common
 
 import com.github.tminglei.slickpg._
 

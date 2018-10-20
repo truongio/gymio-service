@@ -2,8 +2,8 @@ package com.gymio
 
 import cats.effect._
 import cats.implicits._
-import com.gymio.domain.infrastructure.WorkoutPGSQLRepo
-import com.gymio.domain.infrastructure.common.DatabaseProfile.api._
+import com.gymio.db.WorkoutPGSQLRepo
+import com.gymio.db.common.DatabaseProfile.api._
 import com.typesafe.config.{Config, ConfigFactory}
 import io.circe.generic.auto._
 import org.flywaydb.core.Flyway

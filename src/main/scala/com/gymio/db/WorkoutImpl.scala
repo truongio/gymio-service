@@ -1,12 +1,13 @@
-package com.gymio.domain.infrastructure
+package com.gymio.db
 
 import java.time.Instant
 import java.time.Instant.now
 import java.util.UUID
 
-import com.gymio.domain.infrastructure.WorkoutRecord.toRecord
-import com.gymio.domain.infrastructure.common.DatabaseProfile.api._
-import com.gymio.domain.infrastructure.common.DatabaseProfileProvider
+import com.gymio.db.WorkoutRecord.toRecord
+import com.gymio.db.common.DatabaseProfile.api._
+import com.gymio.db.common.DatabaseProfileProvider
+import com.gymio.domain.infrastructure.WorkoutRepo
 import com.gymio.domain.model.Workout
 import io.circe.Json
 import io.circe.syntax._
