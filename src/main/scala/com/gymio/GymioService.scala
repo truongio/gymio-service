@@ -50,8 +50,12 @@ class GymioService(repo: WorkoutRepo) {
   def getActiveWorkout(userId: UUID): IO[Response[IO]] = {
     val f = repo find userId
     for {
-      ws  <- fromFuture(pure(f))
-      res <- ws.filter(_.status == Active).lastOption.map(w => Ok(w.asJson)).getOrElse(NoContent())
+      ws <- fromFuture(pure(f))
+      res <- ws
+        .filter(_.status == Active)
+        .lastOption
+        .map(w => Ok(w.asJson))
+        .getOrElse(NoContent())
     } yield res
   }
 
@@ -61,7 +65,7 @@ class GymioService(repo: WorkoutRepo) {
     for {
       ws <- fromFuture(pure(f))
       w = ws.lastOption.map(nextWorkout).getOrElse(defaultW)
-      _  <- saveWorkout(userId)(w)
+      _   <- saveWorkout(userId)(w)
       res <- Ok(w.asJson)
     } yield res
   }
@@ -72,16 +76,11 @@ class GymioService(repo: WorkoutRepo) {
     for {
       ws <- fromFuture(pure(f))
       w = ws.filter(_.status == Active).last
-      c   <- req.as[Command]
-      e   <- fromEither(decide(c))
-      saved   <- saveActiveWorkout(userId, e)(w)
-      res <- Accepted(saved.asJson)
+      c     <- req.as[Command]
+      e     <- fromEither(decide(c))
+      saved <- saveWorkout(userId)(WorkoutService.apply(e)(w))
+      res   <- Accepted(saved.asJson)
     } yield res
-  }
-
-  def saveActiveWorkout(userId: UUID, event: Event)(w: Workout): IO[Workout] = {
-    val savedWorkout = repo.save(userId, WorkoutService.apply(event)(w))
-    fromFuture(pure(savedWorkout))
   }
 
   def saveWorkout(userId: UUID)(w: Workout): IO[Workout] = {
