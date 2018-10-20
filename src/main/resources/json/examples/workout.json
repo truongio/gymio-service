@@ -13,7 +13,7 @@
             "reps": 5,
             "weight": {
               "value": 100,
-              "unit": "Kg"
+              "unit": "kg"
             }
           },
           {
@@ -21,7 +21,7 @@
             "reps": 5,
             "weight": {
               "value": 100,
-              "unit": "Kg"
+              "unit": "kg"
             }
           },
           {
@@ -29,7 +29,7 @@
             "reps": 8,
             "weight": {
               "value": 100,
-              "unit": "Kg"
+              "unit": "kg"
             }
           }
         ]
@@ -42,7 +42,7 @@
             "reps": 5,
             "weight": {
               "value": 60,
-              "unit": "Kg"
+              "unit": "kg"
             }
           },
           {
@@ -50,7 +50,7 @@
             "reps": 5,
             "weight": {
               "value": 60,
-              "unit": "Kg"
+              "unit": "kg"
             }
           },
           {
@@ -58,7 +58,7 @@
             "reps": 6,
             "weight": {
               "value": 60,
-              "unit": "Kg"
+              "unit": "kg"
             }
           }
         ]
