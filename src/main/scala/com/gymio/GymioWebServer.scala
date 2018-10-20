@@ -7,21 +7,28 @@ import com.gymio.db.{UserStatsPSQLRepo, WorkoutPGSQLRepo}
 import com.typesafe.config.{Config, ConfigFactory}
 import io.circe.generic.auto._
 import org.flywaydb.core.Flyway
+import org.http4s.implicits._
+import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
 
 object GymioWebServer extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
-    val conf = ConfigFactory.load()
-    val db   = Database.forConfig("slick.db")
-    val repo = new WorkoutPGSQLRepo(db)
+    val conf          = ConfigFactory.load()
+    val db            = Database.forConfig("slick.db")
+    val repo          = new WorkoutPGSQLRepo(db)
     val userStatsRepo = new UserStatsPSQLRepo(db)
 
     migrateDb(conf)
 
+    val httpApp =
+      Router(
+        WorkoutAPI.root   -> new WorkoutAPI(repo).workoutAPI,
+        UserStatsAPI.root -> new UserStatsAPI(userStatsRepo).userStatsAPI
+      ).orNotFound
+
     BlazeServerBuilder[IO]
       .bindHttp(8080, "localhost")
-      .withHttpApp(new WorkoutAPI(repo).workoutAPI)
-      .withHttpApp(new UserStatsAPI(userStatsRepo).userStatsAPI)
+      .withHttpApp(httpApp)
       .serve
       .compile
       .drain

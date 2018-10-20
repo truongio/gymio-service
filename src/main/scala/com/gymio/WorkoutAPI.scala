@@ -3,7 +3,6 @@ package com.gymio
 import java.util.UUID
 import java.util.UUID.randomUUID
 
-import cats.data.Kleisli
 import cats.effect.IO.{fromEither, fromFuture, pure}
 import cats.effect._
 import com.gymio.domain.infrastructure.WorkoutRepo
@@ -18,32 +17,35 @@ import org.http4s.circe._
 import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Request, Response}
 
+object WorkoutAPI {
+  val root = "/workout"
+}
+
 class WorkoutAPI(repo: WorkoutRepo) {
-  val workoutAPI: Kleisli[IO, Request[IO], Response[IO]] = HttpRoutes
+  val workoutAPI: HttpRoutes[IO] = HttpRoutes
     .of[IO] {
-      case GET -> Root / "workout" / UUIDVar(userId) =>
+      case GET -> Root / UUIDVar(userId) =>
         workouts(userId)
 
-      case GET -> Root / "workout" / "active" / UUIDVar(userId) =>
+      case GET -> Root / "active" / UUIDVar(userId) =>
         getActiveWorkout(userId)
 
-      case POST -> Root / "workout" / "active" / UUIDVar(userId) / "start" =>
+      case POST -> Root / "active" / UUIDVar(userId) / "start" =>
         startWorkout(userId)
 
-      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "log" =>
+      case req @ POST -> Root / "active" / UUIDVar(userId) / "log" =>
         logExerciseForWorkout(req, userId)
 
-      case req @ POST -> Root / "workout" / "active" / UUIDVar(userId) / "finish" =>
+      case req @ POST -> Root / "active" / UUIDVar(userId) / "finish" =>
         completeWorkout(req, userId)
     }
-    .orNotFound
 
   def workouts(userId: UUID): IO[Response[IO]] = {
     val f = repo find userId
     for {
-      ws  <- fromFuture(pure(f))
-      res <- Ok(ws.asJson)
-    } yield res
+      ws <- fromFuture(pure(f))
+      r  <- Ok(ws.asJson)
+    } yield r
 
   }
 
@@ -51,12 +53,12 @@ class WorkoutAPI(repo: WorkoutRepo) {
     val f = repo find userId
     for {
       ws <- fromFuture(pure(f))
-      res <- ws
+      r <- ws
         .filter(_.status == Active)
         .lastOption
         .map(w => Ok(w.asJson))
         .getOrElse(NoContent())
-    } yield res
+    } yield r
   }
 
   def startWorkout(userId: UUID): IO[Response[IO]] = {
@@ -65,9 +67,9 @@ class WorkoutAPI(repo: WorkoutRepo) {
     for {
       ws <- fromFuture(pure(f))
       w = ws.lastOption.map(nextWorkout).getOrElse(defaultW)
-      _   <- saveWorkout(userId)(w)
-      res <- Ok(w.asJson)
-    } yield res
+      _ <- saveWorkout(userId)(w)
+      r <- Ok(w.asJson)
+    } yield r
   }
 
   def logExerciseForWorkout(req: Request[IO],
@@ -79,8 +81,8 @@ class WorkoutAPI(repo: WorkoutRepo) {
       c     <- req.as[Command]
       e     <- fromEither(decide(c))
       saved <- saveWorkout(userId)(WorkoutService.apply(e)(w))
-      res   <- Accepted(saved.asJson)
-    } yield res
+      r     <- Accepted(saved.asJson)
+    } yield r
   }
 
   def completeWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
@@ -88,9 +90,9 @@ class WorkoutAPI(repo: WorkoutRepo) {
     for {
       ws <- fromFuture(pure(f))
       w = ws.filter(_.status == Active).last.copy(status = Status.Completed)
-      _   <- saveWorkout(userId)(w)
-      res <- Accepted(w.asJson)
-    } yield res
+      _ <- saveWorkout(userId)(w)
+      r <- Accepted(w.asJson)
+    } yield r
   }
 
   def saveWorkout(userId: UUID)(w: Workout): IO[Workout] = {
