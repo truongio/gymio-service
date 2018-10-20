@@ -1,8 +1,5 @@
 package com.gymio.domain.service
 
-import java.util.UUID.randomUUID
-
-import com.gymio.domain.model.Status.Active
 import com.gymio.domain.model._
 
 object WorkoutService {
@@ -59,13 +56,10 @@ object WorkoutService {
   }
 
   def nextWorkout(w: Workout): Workout = {
-    if (w.week == 3) {
-      w.copy(id = randomUUID, status = Active, week = 1, day = 1, completedExercises = List())
-    } else if (w.day == 3) {
-      w.copy(id = randomUUID, status = Active, week = w.week + 1, day = 1, completedExercises = List())
-    } else {
-      w.copy(id = randomUUID, status = Active, day = w.day + 1, completedExercises = List())
-    }
+    val nextDay = (w.day % 3) + 1
+    val nextWeek = if (w.day == 3) (w.week % 3) + 1 else w.week
+
+    Workout(day = nextDay, week = nextWeek)
   }
 
   def decide(command: Command): Either[Throwable, Event] = {

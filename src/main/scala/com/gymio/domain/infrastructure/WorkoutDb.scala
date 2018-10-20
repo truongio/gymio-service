@@ -1,5 +1,7 @@
 package com.gymio.domain.infrastructure
 
+import java.time.Instant
+import java.time.Instant.now
 import java.util.UUID
 
 import com.gymio.domain.infrastructure.WorkoutRecord.toRecord
@@ -16,7 +18,6 @@ import slick.lifted.{Rep, TableQuery, Tag}
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 
 object WorkoutActions extends EntityActions with DatabaseProfileProvider {
 
@@ -46,10 +47,12 @@ class WorkoutPGSQLRepo(db: Database) extends WorkoutRepo {
   import WorkoutActions._
 
   def save(userId: UUID, l: Workout): Future[Workout] = {
-    db.run(WorkoutActions.findOptionById(l.id)).flatMap {
-      case Some(_) => db.run(update(toRecord(userId, l)))
-      case None => db.run(insert(toRecord(userId, l)))
-    }.map(_ => l)
+    db.run(WorkoutActions.findOptionById(l.id))
+      .flatMap {
+        case Some(_) => db.run(update(toRecord(userId, l)))
+        case None    => db.run(insert(toRecord(userId, l)))
+      }
+      .map(_ => l)
   }
 
   def find(userId: UUID): Future[Seq[Workout]] = {
@@ -63,23 +66,25 @@ class WorkoutPGSQLRepo(db: Database) extends WorkoutRepo {
 
 class WorkoutTable(tag: Tag) extends Table[WorkoutRecord](tag, "workout") {
 
-  def id: Rep[UUID]   = column("id", O.PrimaryKey)
-  def userId: Rep[UUID]   = column("user_id")
-  def data: Rep[Json] = column("data")
+  def id: Rep[UUID]     = column("id", O.PrimaryKey)
+  def userId: Rep[UUID] = column("user_id")
+  def data: Rep[Json]   = column("data")
+  def timestamp: Rep[Instant] = column("timestamp")
 
   override def * =
-    (id, userId, data) <> ((WorkoutRecord.apply _).tupled, WorkoutRecord.unapply)
+    (id, userId, data, timestamp) <> ((WorkoutRecord.apply _).tupled, WorkoutRecord.unapply)
 }
 
 case class WorkoutRecord(
     id: UUID,
     userId: UUID,
-    data: Json
+    data: Json,
+    timestamp: Instant
 )
 
 object WorkoutRecord {
   def toRecord(userId: UUID, w: Workout): WorkoutRecord = {
-    WorkoutRecord(w.id, userId, w.asJson)
+    WorkoutRecord(w.id, userId, w.asJson, now)
   }
 
   def toWorkout(w: WorkoutRecord): immutable.Seq[Workout] = {
