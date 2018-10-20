@@ -23,4 +23,6 @@ GET    | /workout/active/{id}            | Active workout
 POST   | /workout/active/{id}/start      | Start a workout
 POST   | /workout/active/{id}/log        | Log a completed exercise to an active workout
 POST   | /workout/active/{id}/finish     | Finish an active workout
+GET    | /user-stats/{id}                | Stats for user
+POST   | /user-stats/{id}                | Save stats for user
 
