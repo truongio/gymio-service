@@ -1,5 +1,8 @@
 package com.gymio
 
+import java.net.InetAddress
+import java.net.InetSocketAddress
+
 import cats.effect._
 import cats.implicits._
 import com.gymio.db.common.DatabaseProfile.api._
@@ -27,7 +30,7 @@ object GymioWebServer extends IOApp {
       ).orNotFound
 
     BlazeServerBuilder[IO]
-      .bindHttp(8080)
+      .bindHttp(8080, "0.0.0.0")
       .withHttpApp(httpApp)
       .serve
       .compile

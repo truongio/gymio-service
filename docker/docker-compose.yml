@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+  gymio-service:
+    build:
+      context: ..
+      dockerfile: docker/service/Dockerfile
+    ports:
+    - "8080:8080"
+    network_mode: host
+
+  gymio-db:
+    build:
+      context: db
+      dockerfile: Dockerfile
+    ports:
+    - "5432:5432"
+    network_mode: host
