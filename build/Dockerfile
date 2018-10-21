@@ -15,8 +15,10 @@ COPY --from=build /usr/src/gymio-service/target/universal/gymio*.tgz .
 
 RUN mkdir /gymio
 
-RUN tar -xvzf /usr/src/gymio-service/target/universal/gymio*.tgz -C /gymio
+RUN tar -xvzf gymio*.tgz
 
-ENTRYPOINT ["/gymio/bin/gymio-service"]
+RUN rm gymio*.tgz
+
+ENTRYPOINT ["./gymio-*/bin/gymio-service"]
 
 CMD []
