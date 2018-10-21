@@ -31,7 +31,12 @@ lazy val root = (project in file("."))
     ),
     addCompilerPlugin("org.spire-math" %% "kind-projector"     % "0.9.6"),
     addCompilerPlugin("com.olegpy"     %% "better-monadic-for" % "0.2.4")
-  )
+  ).enablePlugins(JavaAppPackaging).enablePlugins(DockerPlugin).enablePlugins(AshScriptPlugin)
+
+mainClass in Compile := Some("com.gymio.GymioWebServer")
+
+dockerBaseImage := "openjdk:jre-alpine"
+packageName in Docker := "gcr.io/gymio-220023/gymio"
 
 scalacOptions ++= Seq(
   "-deprecation",
@@ -42,3 +47,4 @@ scalacOptions ++= Seq(
   "-feature",
   "-Ypartial-unification",
 )
+
