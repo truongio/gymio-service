@@ -27,7 +27,7 @@ object GymioWebServer extends IOApp {
       ).orNotFound
 
     BlazeServerBuilder[IO]
-      .bindHttp(8080, "")
+      .bindHttp(8080)
       .withHttpApp(httpApp)
       .serve
       .compile
