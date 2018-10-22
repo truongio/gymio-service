@@ -2,22 +2,17 @@ version: 2
 jobs:
   build:
     docker:
-      - image: google/cloud-sdk
+      - image: docker:18.06.0-ce-git
+
+      auth:
+        username: _json_key  # default username when using a JSON key file to authenticate
+        password: $GCLOUD_SERVICE_KEY  # JSON service account you created
 
     working_directory: ~/repo
 
     steps:
       - checkout
       - setup_remote_docker
-
-      - run:
-          name: Build Docker
-          command: |
-            docker build \
-              -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH \
-              -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH-$CIRCLE_SHA1 \
-              -f build/Dockerfile \
-              .
 
       - run:
           name: Auth Google Cloud k8s
@@ -28,4 +23,11 @@ jobs:
             sudo gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
             sudo gcloud gcloud container clusters get-credentials gymio-cluster
 
-
+      - run:
+          name: Build Docker
+          command: |
+            docker build \
+              -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH \
+              -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH-$CIRCLE_SHA1 \
+              -f build/Dockerfile \
+              .
