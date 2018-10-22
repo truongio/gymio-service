@@ -9,4 +9,4 @@ jobs:
     steps:
       - checkout
 
-      - run: docker version
+      - run: ls -l
