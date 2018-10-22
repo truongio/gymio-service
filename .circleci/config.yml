@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:18.06.0-ce-git
+      - image: google/cloud-sdk
 
     working_directory: ~/repo
 
@@ -14,10 +14,10 @@ jobs:
           name: Auth Google Cloud k8s
           command: |
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-            sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            sudo gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-            sudo gcloud gcloud container clusters get-credentials gymio-cluster
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            gcloud gcloud container clusters get-credentials gymio-cluster
 
       - run:
           name: Build Docker
