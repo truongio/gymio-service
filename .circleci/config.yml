@@ -11,6 +11,11 @@ jobs:
       - setup_remote_docker
 
       - run:
+          name: Install dependencies
+          command: |
+            apt-get install -y gettext
+
+      - run:
           name: Auth Google Cloud k8s
           command: |
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
