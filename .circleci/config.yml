@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:18.06.0-ce-git
+      - image: google/cloud-sdk
 
     working_directory: ~/repo
 
@@ -15,5 +15,17 @@ jobs:
           command: |
             docker build \
               -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH \
+              -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH-$CIRCLE_SHA1 \
               -f build/Dockerfile \
               .
+
+      - run:
+          name: Auth Google Cloud k8s
+          command: |
+            echo $GCLOUD_SERVICE_KEY > $GOOGLE_APPLICATION_CREDENTIALS
+            sudo gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            sudo gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            sudo gcloud gcloud container clusters get-credentials gymio-cluster
+
+
