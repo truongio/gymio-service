@@ -9,4 +9,10 @@ jobs:
     steps:
       - checkout
 
-      - run: ls -l
+      - run:
+          name: Build Docker
+          command: |
+            docker build \
+              -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH \
+              -f build/Dockerfile \
+              .
