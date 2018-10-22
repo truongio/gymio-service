@@ -3,9 +3,6 @@ jobs:
   build:
     docker:
       - image: docker:18.06.0-ce-git
-        auth:
-          username: _json_key  # default username when using a JSON key file to authenticate
-          password: $GCLOUD_SERVICE_KEY  # JSON service account you created
 
     working_directory: ~/repo
 
