@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gymio
+  labels:
+    app: gymio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gymio
+  template:
+    metadata:
+      labels:
+        app: gymio
+    spec:
+      containers:
+        - name: gymio
+          image: XXX_IMAGE
+          ports:
+            - containerPort: 8080

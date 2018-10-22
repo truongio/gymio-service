@@ -18,7 +18,6 @@ jobs:
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
             gcloud container clusters get-credentials gymio-cluster
-            kubectl get pods
 
       - run:
           name: Build Docker
@@ -28,3 +27,8 @@ jobs:
               -t gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH-$CIRCLE_SHA1 \
               -f build/Dockerfile \
               .
+
+      - run:
+          name: Deploy to k8s
+          command: |
+            kubectl apply -f deployment

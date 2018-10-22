@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gymio
+spec:
+  selector:
+    app: gymio
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
