@@ -31,4 +31,5 @@ jobs:
       - run:
           name: Deploy to k8s
           command: |
+            sed -i "s@$XXX_IMAGE@gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH-$CIRCLE_SHA1@g" deployment/gymio-service.yaml
             kubectl apply -f deployment
