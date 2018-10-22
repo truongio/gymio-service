@@ -13,6 +13,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            apt-get update
             apt-get install -y gettext
 
       - run:
