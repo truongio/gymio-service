@@ -20,14 +20,14 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: POSTGRES_DB_HOST
+            - name: DB_HOST
               value: 127.0.0.1:5432
-            - name: POSTGRES_DB_USER
+            - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: cloudsql-db-credentials
                   key: username
-            - name: POSTGRES_DB_PASSWORD
+            - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: cloudsql-db-credentials
