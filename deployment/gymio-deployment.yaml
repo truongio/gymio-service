@@ -21,7 +21,7 @@ spec:
             - containerPort: 8080
           env:
             - name: POSTGRES_DB_HOST
-              value: localhost:5432
+              value: 127.0.0.1:5432
             - name: POSTGRES_DB_USER
               valueFrom:
                 secretKeyRef:
