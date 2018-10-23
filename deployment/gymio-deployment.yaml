@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gymio
+  labels:
+    app: gymio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gymio
+  template:
+    metadata:
+      labels:
+        app: gymio
+    spec:
+      containers:
+        - name: gymio
+          image: gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH-$CIRCLE_SHA1
+          ports:
+            - containerPort: 8080
