@@ -42,10 +42,11 @@ jobs:
           command: |
             # Provision
             envsubst < deployment/gymio-deployment.yaml > deployment/gymio-deployment-rendered.yaml
+            echo $GYMIO_DB_SERVICE_ACCOUNT > ${HOME}/gcloud-gymio-db-service-key.json
 
             # Create secrets
             kubectl create secret generic cloudsql-instance-credentials \
-              --from-file=credentials.json="$GYMIO_DB_SERVICE_ACCOUNT"
+              --from-file=credentials.json=${HOME}/gcloud-gymio-db-service-key.json
             kubectl create secret generic cloudsql-db-credentials \
               --from-literal=username="$GYMIO_DB_USER" --from-literal=password="$GYMIO_DB_PASSWORD"
 
