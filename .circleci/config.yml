@@ -45,9 +45,9 @@ jobs:
 
             # Create secrets
             kubectl create secret generic cloudsql-instance-credentials \
-              --from-file=credentials.json=$GYMIO_DB_SERVICE_ACCOUNT
+              --from-file=credentials.json="$GYMIO_DB_SERVICE_ACCOUNT"
             kubectl create secret generic cloudsql-db-credentials \
-              --from-literal=username=$GYMIO_DB_USER --from-literal=password=$GYMIO_DB_PASSWORD
+              --from-literal=username="$GYMIO_DB_USER" --from-literal=password="$GYMIO_DB_PASSWORD"
 
             # Deployment and service
             kubectl apply -f deployment/gymio-deployment-rendered.yaml
