@@ -13,10 +13,10 @@ FROM openjdk:8-jre-alpine3.8
 
 COPY --from=build /usr/src/gymio-service/target/universal/gymio*.tgz .
 
+RUN mkdir /gymio
 RUN tar -xvzf gymio*.tgz
-
 RUN rm gymio-*.tgz
 
-ENTRYPOINT ["./gymio-*/bin/gymio-service"]
+ENTRYPOINT /gymio-*/bin/gymio-service
 
 CMD []
