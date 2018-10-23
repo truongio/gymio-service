@@ -3,6 +3,7 @@ apiVersion: v1
 metadata:
   name: gymio
 spec:
+  type: LoadBalancer
   selector:
     app: gymio
   ports:
