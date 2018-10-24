@@ -7,8 +7,10 @@ import com.gymio.db.{UserStatsPSQLRepo, WorkoutPGSQLRepo}
 import com.typesafe.config.{Config, ConfigFactory}
 import io.circe.generic.auto._
 import org.flywaydb.core.Flyway
+import org.http4s.implicits._
+import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.server.middleware.{CORS, _}
+import org.http4s.server.middleware._
 
 import scala.concurrent.duration._
 
