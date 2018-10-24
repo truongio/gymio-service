@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/truongio/gymio-service/tree/master.svg?style=shield)](https://circleci.com/gh/truongio/gymio-service/tree/master)
 # Gymio
 
 ### Requirements
