@@ -13,6 +13,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            echo $GCLOUD_SERVICE_KEY
             apt-get update
             apt-get install -y gettext
 
