@@ -7,9 +7,10 @@ import com.gymio.db.{UserStatsPSQLRepo, WorkoutPGSQLRepo}
 import com.typesafe.config.{Config, ConfigFactory}
 import io.circe.generic.auto._
 import org.flywaydb.core.Flyway
-import org.http4s.implicits._
-import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.server.middleware.{CORS, _}
+
+import scala.concurrent.duration._
 
 object GymioWebServer extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
@@ -20,10 +21,17 @@ object GymioWebServer extends IOApp {
 
     migrateDb(conf)
 
+    val methodConfig = CORSConfig(
+      anyOrigin = true,
+      anyMethod = false,
+      allowedMethods = Some(Set("GET", "POST")),
+      allowCredentials = true,
+      maxAge = 1.day.toSeconds)
+
     val httpApp =
       Router(
-        WorkoutAPI.root   -> new WorkoutAPI(repo).workoutAPI,
-        UserStatsAPI.root -> new UserStatsAPI(userStatsRepo).userStatsAPI
+        WorkoutAPI.root   -> CORS(new WorkoutAPI(repo).workoutAPI, methodConfig),
+        UserStatsAPI.root -> CORS(new UserStatsAPI(userStatsRepo).userStatsAPI, methodConfig)
       ).orNotFound
 
     BlazeServerBuilder[IO]

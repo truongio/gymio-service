@@ -16,6 +16,8 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "org.http4s"          %% "http4s-blaze-server"  % Http4sVersion,
       "org.http4s"          %% "http4s-circe"         % Http4sVersion,
+      "org.http4s"          %% "http4s-dsl"           % Http4sVersion,
+      "org.http4s"          %% "http4s-server"        % Http4sVersion,
       "io.circe"            %% "circe-generic"        % CirceVersion,
       "io.circe"            %% "circe-generic-extras" % CirceVersion,
       "org.http4s"          %% "http4s-dsl"           % Http4sVersion,
@@ -40,7 +42,6 @@ lazy val root = (project in file("."))
   .enablePlugins(AshScriptPlugin)
 
 mainClass in Compile := Some("com.gymio.GymioWebServer")
-
 dockerBaseImage := "openjdk:jre-alpine"
 packageName in Docker := "gcr.io/gymio-220023/gymio"
 
