@@ -7,7 +7,7 @@ import io.circe.{Decoder, Encoder}
 case class UserStats(trainingMaxes: Map[String, Weight], bodyWeight: Weight)
 
 object UserStats {
-  implicit val config: Configuration = Configuration.default
-  implicit val decoder: Decoder[UserStats] = semiauto.deriveDecoder
-  implicit val encoder: Encoder[UserStats] = semiauto.deriveEncoder
+  implicit val c: Configuration      = Configuration.default
+  implicit val d: Decoder[UserStats] = semiauto.deriveDecoder
+  implicit val e: Encoder[UserStats] = semiauto.deriveEncoder
 }
