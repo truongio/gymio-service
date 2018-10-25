@@ -4,7 +4,8 @@ metadata:
   name: gymio
   annotations:
     ingress.gcp.kubernetes.io/pre-shared-cert: "gymio2"
+    kubernetes.io/ingress.allow-http: "false"
 spec:
   backend:
     serviceName: gymio
-    servicePort: 443
+    servicePort: 8080
