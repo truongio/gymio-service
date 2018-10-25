@@ -3,8 +3,9 @@ kind: Ingress
 metadata:
   name: gymio
   annotations:
-    ingress.gcp.kubernetes.io/pre-shared-cert: "gymioapp2"
-    kubernetes.io/ingress.allow-http: "false"
+    ingress.gcp.kubernetes.io/pre-shared-cert: gymioapp
+    kubernetes.io/ingress.allow-http: false
+    kubernetes.io/ingress.global-static-ip-name: gymio-ingress
 spec:
   backend:
     serviceName: gymio
