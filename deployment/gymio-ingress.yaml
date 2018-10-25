@@ -4,7 +4,7 @@ metadata:
   name: gymio
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "gymio"
-    ingress.gcp.kubernetes.io/pre-shared-cert: "gymioapp"
+    ingress.gcp.kubernetes.io/pre-shared-cert: "gymio-api"
     kubernetes.io/ingress.allow-http: "false"
 spec:
   backend:
