@@ -2,7 +2,9 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: gymio
+  annotations:
+    ingress.gcp.kubernetes.io/pre-shared-cert: "gymio2"
 spec:
   backend:
     serviceName: gymio
-    servicePort: 80
+    servicePort: 443
