@@ -5,4 +5,4 @@ metadata:
 spec:
   backend:
     serviceName: gymio
-    servicePort: 8080
+    servicePort: 80
