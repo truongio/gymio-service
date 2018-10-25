@@ -33,7 +33,8 @@ object GymioWebServer extends IOApp {
     val httpApp =
       Router(
         WorkoutAPI.root   -> CORS(new WorkoutAPI(repo).workoutAPI, methodConfig),
-        UserStatsAPI.root -> CORS(new UserStatsAPI(userStatsRepo).userStatsAPI, methodConfig)
+        UserStatsAPI.root -> CORS(new UserStatsAPI(userStatsRepo).userStatsAPI, methodConfig),
+        "/"               -> CORS(HealthCheckAPI.healthCheckAPI)
       ).orNotFound
 
     BlazeServerBuilder[IO]
