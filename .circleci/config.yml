@@ -56,4 +56,5 @@ jobs:
             # Deployment and service
             kubectl apply -f deployment/gymio-deployment-rendered.yaml
             kubectl apply -f deployment/gymio-service.yaml
+            kubectl apply -f deployment/gymio-ingress.yaml
 
