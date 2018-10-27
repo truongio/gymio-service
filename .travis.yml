@@ -1,0 +1,22 @@
+sudo: required
+
+language: scala
+
+services:
+  - docker
+
+before_install:
+  - bash ci/auth_cloud.sh ${GCLOUD_SERVICE_ACCOUNT}
+
+stages:
+  - build
+  - deploy
+
+jobs:
+  include:
+    - name: "Build Docker"
+      stage: build
+      script: bash ci/build_and_push_docker.sh ${TRAVIS_BRANCH} ${TRAVIS_COMMIT}
+    - name: "Deploy to k8s"
+      stage: deploy
+      script: bash ci/deploy_k8s.sh ${GYMIO_DB_SERVICE_ACCOUNT} ${GYMIO_DB_USER} ${GYMIO_DB_PASSWORD}
