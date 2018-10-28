@@ -12,8 +12,8 @@ cache:
   directories:
     - "$HOME/google-cloud-sdk/"
 
-env:
-  - PATH=$PATH:${HOME}/google-cloud-sdk/bin
+#env:
+#  - PATH=$PATH:${HOME}/google-cloud-sdk/bin
 
 before_install:
   # Install dependencies

@@ -10,5 +10,6 @@ then
   curl https://sdk.cloud.google.com | bash
 fi
 
+source $HOME/google-cloud-sdk/path.bash.inc
 gcloud --quiet components update kubectl
 gcloud version
