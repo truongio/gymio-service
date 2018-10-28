@@ -10,6 +10,6 @@ REPOSITORY="gcr.io/gymio-220023/gymio-service"
 BRANCH=$1
 SHA=$2
 
-docker build -t ${REPOSITORY}:${BRANCH} -t ${REPOSITORY}:${BRANCH}-${SHA} -f build/Dockerfile .
+docker build --no-cache -t ${REPOSITORY}:${BRANCH} -t ${REPOSITORY}:${BRANCH}-${SHA} -f build/Dockerfile .
 gcloud docker -- push ${REPOSITORY}:${BRANCH}
 gcloud docker -- push ${REPOSITORY}:${BRANCH}-${SHA}

@@ -11,6 +11,7 @@ services:
 cache:
   directories:
     - "$HOME/google-cloud-sdk/"
+    - "$HOME/sbt-dependencies"
 
 env:
   - PATH=$PATH:${HOME}/google-cloud-sdk/bin
@@ -25,11 +26,16 @@ before_install:
   - bash ci/auth_gcloud.sh circle-ci-serviceaccount.json
 
 stages:
+  - dependencies
   - build
   - deploy
 
 jobs:
   include:
+    - name: Build dependencies
+      stage: dependencies
+      script:
+        - bash ci/update_base_image.sh
     - name: Build Docker
       stage: build
       script:
