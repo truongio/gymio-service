@@ -14,7 +14,7 @@ BRANCH=$4
 SHA=$5
 
 # Provision
-GYMIO_SERVICE_IMAGE=${REPOSITORY}:${BRANCH}-${SHA}
+export GYMIO_SERVICE_IMAGE=${REPOSITORY}:${BRANCH}-${SHA}
 envsubst < deployment/gymio-deployment.yaml > deployment/gymio-deployment-rendered.yaml
 
 # Create secrets
