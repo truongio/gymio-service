@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: gymio
-          image: gcr.io/gymio-220023/$CIRCLE_PROJECT_REPONAME:$CIRCLE_PROJECT_USERNAME-$CIRCLE_BRANCH-$CIRCLE_SHA1
+          image: $GYMIO_SERVICE_IMAGE
           ports:
             - containerPort: 8080
           env:
