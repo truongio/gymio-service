@@ -7,6 +7,11 @@ language: minimal
 services:
   - docker
 
+# Cache our Gcloud SDK between commands
+cache:
+  directories:
+    - "$HOME/google-cloud-sdk/"
+
 before_install:
   # Install dependencies
   - bash ci/install_dependencies.sh
