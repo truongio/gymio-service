@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 5 ]; then
-    echo -e "\e[31mThree arguments expected. Usage: $0 <GCLOUD_SERVICE_ACOUNT_JSON_FILE> <DB_USER> <DB_PASSWORD> <BRANCH> <SHA>\e[39m"
+    echo -e "\e[31m5 arguments expected. Usage: $0 <GCLOUD_SERVICE_ACOUNT_JSON_FILE> <DB_USER> <DB_PASSWORD> <BRANCH> <SHA>\e[39m"
     echo -e "\e[31mExample: $0 service_account.json root pass develop 123123\e[39m"
     exit 1
 fi
