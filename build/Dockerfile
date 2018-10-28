@@ -1,4 +1,4 @@
-FROM gcr.io/gymio-220023/gymio-build-base:latest AS build
+FROM spikerlabs/scala-sbt:scala-2.12.7-sbt-1.2.6 AS build
 
 ADD /src /usr/src/gymio-service/src
 COPY /build.sbt /usr/src/gymio-service/build.sbt
