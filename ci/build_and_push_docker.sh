@@ -11,4 +11,4 @@ BRANCH=$1
 SHA=$2
 
 docker build -t ${REPOSITORY}:${BRANCH} -t ${REPOSITORY}:${BRANCH}-${SHA} -f build/Dockerfile .
-gcloud docker push ${REPOSITORY}:${BRANCH} ${REPOSITORY}:${BRANCH}-${SHA}
+gcloud docker -- push ${REPOSITORY}:${BRANCH} ${REPOSITORY}:${BRANCH}-${SHA}

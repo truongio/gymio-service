@@ -13,4 +13,3 @@ then
 fi
 
 gcloud --quiet components update kubectl
-gcloud version
