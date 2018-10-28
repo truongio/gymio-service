@@ -9,7 +9,7 @@ services:
 
 before_install:
   # Install dependencies
-  - apt-get update && apt-get --only-upgrade install kubectl google-cloud-sdk
+  - apt-get update && apt-get --only-upgrade -y install kubectl google-cloud-sdk
   # Get secrets
   - openssl aes-256-cbc -K $encrypted_76b3b19e50ea_key -iv $encrypted_76b3b19e50ea_iv -in ci/travis-secret.tar.enc -out travis-secret.tar -d
   - tar xvf travis-secret.tar
