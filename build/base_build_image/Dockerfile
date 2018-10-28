@@ -1,4 +1,4 @@
-FROM hseeberger/scala-sbt:8u181_2.12.7_1.2.3 AS build
+FROM spikerlabs/scala-sbt:scala-2.12.7-sbt-1.2.6
 
 COPY /build.sbt /usr/src/gymio-service/build.sbt
 COPY /project/plugins.sbt /usr/src/gymio-service/project/plugins.sbt
@@ -6,7 +6,3 @@ COPY /project/plugins.sbt /usr/src/gymio-service/project/plugins.sbt
 WORKDIR /usr/src/gymio-service
 
 RUN ["sbt", "compile"]
-
-FROM openjdk:8-jre-alpine3.8
-
-COPY --from=build /root/.ivy2/cache /root/.ivy2/cache

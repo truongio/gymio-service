@@ -11,7 +11,7 @@ services:
 cache:
   directories:
     - "$HOME/google-cloud-sdk/"
-    #- "$HOME/sbt-dependencies"
+    - "$HOME/sbt-dependencies"
 
 env:
   - PATH=$PATH:${HOME}/google-cloud-sdk/bin
@@ -32,10 +32,10 @@ stages:
 
 jobs:
   include:
-    #- name: Build dependencies
-    #  stage: dependencies
-    #  script:
-    #    - bash ci/update_base_image.sh
+    - name: Build dependencies
+      stage: dependencies
+      script:
+        - bash ci/update_base_image.sh
     - name: Build Docker
       stage: build
       script:
