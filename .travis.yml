@@ -7,10 +7,10 @@ language: minimal
 services:
   - docker
 
-# Cache our Gcloud SDK between commands
-#cache:
-#  directories:
-#    - "$HOME/google-cloud-sdk/"
+Cache our Gcloud SDK between commands
+cache:
+  directories:
+    - "$HOME/google-cloud-sdk/"
 
 env:
   - PATH=$PATH:${HOME}/google-cloud-sdk/bin
