@@ -12,3 +12,4 @@ then
   curl https://sdk.cloud.google.com | bash
   gcloud --quiet components update kubectl
 fi
+

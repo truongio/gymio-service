@@ -10,6 +10,10 @@ REPOSITORY="gcr.io/gymio-220023/gymio-service"
 BRANCH=$1
 SHA=$2
 
-docker build --no-cache -t ${REPOSITORY}:${BRANCH} -t ${REPOSITORY}:${BRANCH}-${SHA} -f build/Dockerfile .
+# Pull the latest sbt compiled image
+gcloud docker -- pull --no-cache gcr.io/gymio-220023/gymio-build-base:latest
+# Build main docker image
+docker build -t ${REPOSITORY}:${BRANCH} -t ${REPOSITORY}:${BRANCH}-${SHA} -f build/Dockerfile .
+# Push
 gcloud docker -- push ${REPOSITORY}:${BRANCH}
 gcloud docker -- push ${REPOSITORY}:${BRANCH}-${SHA}
