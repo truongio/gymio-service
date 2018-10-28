@@ -1,4 +1,4 @@
-FROM gcr.io/gymio-220023/gymio-build-base:latest AS build
+FROM hseeberger/scala-sbt:8u181_2.12.7_1.2.3 AS build
 
 ADD /src /usr/src/gymio-service/src
 COPY /build.sbt /usr/src/gymio-service/build.sbt
