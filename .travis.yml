@@ -39,4 +39,4 @@ jobs:
       script:
         - DB_USER=$(cat config.json | jq -r '.db.user')
         - DB_PASSWORD=$(cat config.json | jq -r '.db.password')
-        - bash ci/deploy_k8s.sh postgres-serviceaccount.json ${GYMIO_DB_USER} ${GYMIO_DB_PASSWORD}
+        - bash ci/deploy_k8s.sh postgres-serviceaccount.json ${DB_USER} ${DB_PASSWORD}
