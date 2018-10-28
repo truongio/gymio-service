@@ -10,15 +10,7 @@ REPOSITORY="gcr.io/gymio-220023/gymio-service"
 BRANCH=$1
 SHA=$2
 
-# Pull the latest sbt compiled image
-if diff build.sbt $HOME/sbt-dependencies/build.sbt && diff project/plugins.sbt $HOME/sbt-dependencies/project/plugins.sbt
-then
-    echo "Pulling NEW gymio base image"
-    gcloud docker -- pull --no-cache gcr.io/gymio-220023/gymio-build-base:latest
-else
-    echo "Pulling gymio base image"
-    gcloud docker -- pull gcr.io/gymio-220023/gymio-build-base:latest
-fi
+gcloud docker -- pull gcr.io/gymio-220023/gymio-build-base:latest
 
 # Build main docker image
 docker build -t ${REPOSITORY}:${BRANCH} -t ${REPOSITORY}:${BRANCH}-${SHA} -f build/Dockerfile .
