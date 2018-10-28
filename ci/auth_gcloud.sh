@@ -14,5 +14,5 @@ gcloud version
 gcloud auth activate-service-account --key-file=${SERVICE_ACCOUNT_FILE}
 gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-gcloud auth configure-docker
+#gcloud auth configure-docker
 gcloud container clusters get-credentials gymio-cluster
