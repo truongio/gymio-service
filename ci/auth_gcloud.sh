@@ -17,5 +17,4 @@ gcloud container clusters get-credentials gymio-cluster
 
 docker pull alpine:latest
 docker tag alpine:latest gcr.io/gymio-220023/gymio-service:test-123
-docker push gcr.io/gymio-220023/gymio-service:test-123
 gcloud docker -- push gcr.io/gymio-220023/gymio-service:test-123
