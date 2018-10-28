@@ -1,20 +1,27 @@
 sudo: required
 language: scala
+
 services:
   - docker
+
 before_install:
-  - ls
-  - openssl aes-256-cbc -K $encrypted_0a6446eb3ae3_key -iv $encrypted_0a6446eb3ae3_iv -in ci/travis-secret.tar.enc -out travis-secret.tar -d
+  - openssl aes-256-cbc -K $encrypted_4b2b94f48fd2_key -iv $encrypted_4b2b94f48fd2_iv
+    -in ci/travis-secret.tar.enc -out travis-secret.tar -d
   - tar xvf travis-secret.tar
-  - bash ci/auth_cloud.sh circle-ci-serviceaccount.json
+
 stages:
   - build
   - deploy
+
 jobs:
   include:
     - name: Build Docker
       stage: build
-      script: bash ci/build_and_push_docker.sh ${TRAVIS_BRANCH} ${TRAVIS_COMMIT}
+      script:
+        - bash ci/build_and_push_docker.sh ${TRAVIS_BRANCH} ${TRAVIS_COMMIT}
     - name: Deploy to k8s
       stage: deploy
-      script: bash ci/deploy_k8s.sh postgres-serviceaccount.json ${GYMIO_DB_USER} ${GYMIO_DB_PASSWORD}
+      script:
+        - DB_USER=$(cat secret_config.json | jq -r '.db.user')
+        - DB_PASSWORD=$(cat secret_config.json | jq -r '.db.password')
+        - bash ci/deploy_k8s.sh postgres-serviceaccount.json ${GYMIO_DB_USER} ${GYMIO_DB_PASSWORD}
