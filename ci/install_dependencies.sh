@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker version
+
 if [ ! -d "$HOME/google-cloud-sdk/bin" ]
 then
   # Remove old travis SDK
