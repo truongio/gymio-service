@@ -37,6 +37,6 @@ jobs:
     - name: Deploy to k8s
       stage: deploy
       script:
-        - DB_USER=$(cat secret_config.json | jq -r '.db.user')
-        - DB_PASSWORD=$(cat secret_config.json | jq -r '.db.password')
+        - DB_USER=$(cat config.json | jq -r '.db.user')
+        - DB_PASSWORD=$(cat config.json | jq -r '.db.password')
         - bash ci/deploy_k8s.sh postgres-serviceaccount.json ${GYMIO_DB_USER} ${GYMIO_DB_PASSWORD}
