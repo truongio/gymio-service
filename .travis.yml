@@ -12,6 +12,9 @@ services:
 #  directories:
 #    - "$HOME/google-cloud-sdk/"
 
+env:
+  - PATH=$PATH:${HOME}/google-cloud-sdk/bin
+
 before_install:
   # Install dependencies
   - bash ci/install_dependencies.sh
