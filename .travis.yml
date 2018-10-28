@@ -6,7 +6,7 @@ services:
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_4b2b94f48fd2_key -iv $encrypted_4b2b94f48fd2_iv
-    -in ci/travis-secret.tar.enc -out travis-secret.tar -d
+    -in travis-secret.tar.enc -out travis-secret.tar -d
   - tar xvf travis-secret.tar
 
 stages:
