@@ -11,14 +11,12 @@ gcloud version
 
 if [ ! -d "$HOME/google-cloud-sdk/bin" ]
 then
-  echo $HOME
   sudo rm -rf /usr/lib/google-cloud-sdk
-  rm -rf $HOME/google-cloud-sdk
   export CLOUDSDK_CORE_DISABLE_PROMPTS=1
   curl https://sdk.cloud.google.com | bash
 fi
 
-source /home/travis/google-cloud-sdk/path.bash.inc
+source $HOME/google-cloud-sdk/path.bash.inc
 gcloud version
 gcloud --quiet components update kubectl
 
