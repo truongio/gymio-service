@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/truongio/gymio-service/tree/master.svg?style=shield)](https://circleci.com/gh/truongio/gymio-service/tree/master)
+[![Build Status](https://travis-ci.org/truongio/gymio-service.svg?branch=master)](https://travis-ci.org/truongio/gymio-service)
 # Gymio
 
 ### Requirements
