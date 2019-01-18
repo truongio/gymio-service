@@ -1,12 +1,5 @@
 [![Build Status](https://travis-ci.org/truongio/gymio-service.svg?branch=master)](https://travis-ci.org/truongio/gymio-service)
 # Gymio
-
-### Requirements
-
-* `java`
-* `scala`
-* `sbt` (https://www.scala-sbt.org/index.html)
-
 ### Run
 
 To start HTTP server, do
