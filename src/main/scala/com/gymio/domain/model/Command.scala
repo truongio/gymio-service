@@ -12,7 +12,4 @@ object Command {
   implicit val d: Decoder[Command] = semiauto.deriveDecoder
 }
 
-case class CompleteBenchPress(reps: Int, weight: Weight)    extends Command
-case class CompleteSquat(reps: Int, weight: Weight)         extends Command
-case class CompleteDeadlift(reps: Int, weight: Weight)      extends Command
-case class CompleteOverheadPress(reps: Int, weight: Weight) extends Command
+case class CompleteExercise(exercise: Exercise, reps: Int, weight: Weight) extends Command

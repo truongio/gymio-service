@@ -27,30 +27,20 @@ object WorkoutService {
                3 -> Scheme(1, 0.95))
     )
 
-  def progressOnFirstIncompleteExercise(w: Workout, exercises: Seq[Exercise]): Option[Int] = {
-    val mappedExercises = exercises.map {
-      case Squat         => "SquatCompleted"
-      case BenchPress    => "BenchPressCompleted"
-      case Deadlift      => "DeadliftCompleted"
-      case OverheadPress => "OverheadPressCompleted"
-    }
-
+  def progress(w: Workout, exercises: Seq[Exercise]): Seq[(Exercise, Int)] = {
     val r = w.completedExercises
-      .groupBy(e => e)
-      .map(a => a._1.getClass.getSimpleName -> a._2)
+        .collect {case e: ExerciseCompleted => e }
+        .groupBy(_.exercise)
 
-    mappedExercises
-      .map(e => e -> r.getOrElse(e, List()))
-      .find(f => f._2.size < 3)
-      .map(e => e._2.size)
+    exercises.map(e => e -> r.getOrElse(e, Seq()).size)
   }
 
   def weightToLift(exercise: Exercise, stats: UserStats)(w: Workout): Option[Weight] = {
     for {
       schemes   <- SchemesByWeek.get(w.week)
       exercises <- ExercisesByDay.get(w.day)
-      progress  <- progressOnFirstIncompleteExercise(w, exercises)
-      scheme    <- schemes.get(progress)
+      progress  <- progress(w, exercises).find(_._2 < 3)
+      scheme    <- schemes.get(progress._2)
       tM        <- stats.trainingMaxes.get(exercise.entryName)
       weight = Weight(tM.value * scheme.weightPercentage, tM.unit)
     } yield weight
@@ -63,13 +53,9 @@ object WorkoutService {
     Workout(day = nextDay, week = nextWeek)
   }
 
-  def decide(command: Command): Either[Throwable, Event] = {
-    command match {
-      case CompleteBenchPress(reps, weight)    => Right(BenchCompleted(reps, weight))
-      case CompleteSquat(reps, weight)         => Right(SquatCompleted(reps, weight))
-      case CompleteDeadlift(reps, weight)      => Right(DeadliftCompleted(reps, weight))
-      case CompleteOverheadPress(reps, weight) => Right(OverheadPressCompleted(reps, weight))
-    }
+  def decide(cmd: Command): Either[Throwable, Event] = cmd match {
+    case c: CompleteExercise =>
+      Right(ExerciseCompleted(c.exercise, c.reps, c.weight))
   }
 
   def apply(e: Event)(w: Workout): Workout = {

@@ -13,22 +13,4 @@ object Event {
   implicit val e: Encoder[Event] = semiauto.deriveEncoder
 }
 
-case class BenchCompleted(
-    reps: Int,
-    weight: Weight,
-) extends Event
-
-case class SquatCompleted(
-    reps: Int,
-    weight: Weight,
-) extends Event
-
-case class DeadliftCompleted(
-    reps: Int,
-    weight: Weight,
-) extends Event
-
-case class OverheadPressCompleted(
-    reps: Int,
-    weight: Weight,
-) extends Event
+case class ExerciseCompleted(exercise: Exercise, reps: Int, weight: Weight) extends Event
