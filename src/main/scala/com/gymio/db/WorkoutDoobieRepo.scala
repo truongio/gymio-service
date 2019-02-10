@@ -12,17 +12,14 @@ import doobie._
 import doobie.implicits._
 import doobie.postgres.implicits._
 import io.circe.Json
-import io.circe.parser._
 import io.circe.syntax._
-import org.postgresql.util.PGobject
 
 class WorkoutDoobieRepo(transactor: Transactor[IO]) {
   def find(userId: UUID) = {
     sql"SELECT * from workout"
       .query[WorkoutDoobieRepo.WorkoutRecord]
-      .stream
-      .take(5)
-      .compile.toList
+      .to[List]
+      .map(_.flatMap(WorkoutDoobieRepo.toWorkout))
       .transact(transactor)
   }
 
@@ -33,8 +30,7 @@ class WorkoutDoobieRepo(transactor: Transactor[IO]) {
          VALUES (${record.id}, $userId, ${record.data}, ${record.timestamp})
          ON CONFLICT (id)
          DO UPDATE
-         SET id = ${record.id},
-             user_id = $userId,
+         SET user_id = $userId,
              data = ${record.data},
              timestamp = ${record.timestamp}
       """

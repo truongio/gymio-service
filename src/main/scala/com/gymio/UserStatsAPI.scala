@@ -16,19 +16,20 @@ object UserStatsAPI {
 }
 
 class UserStatsAPI(repo: UserStatsDoobieRepo) {
+
   val userStatsAPI: HttpRoutes[IO] = HttpRoutes
     .of[IO] {
-    case GET -> Root / UUIDVar(userId) =>
-      getUserStats(userId)
+      case GET -> Root / UUIDVar(userId) =>
+        getUserStats(userId)
 
-    case req @ POST -> Root / UUIDVar(userId) =>
-      saveUserStats(req, userId)
-  }
+      case req @ POST -> Root / UUIDVar(userId) =>
+        saveUserStats(req, userId)
+    }
 
   def getUserStats(userId: UUID): IO[Response[IO]] = {
     for {
-      uStatsL <- repo.find(userId)
-      r       <- uStatsL.headOption.map(us => Ok(us.asJson)).getOrElse(NoContent())
+      us <- repo.find(userId)
+      r  <- us.map(us => Ok(us.asJson)).getOrElse(NoContent())
     } yield r
   }
 

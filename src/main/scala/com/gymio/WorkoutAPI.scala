@@ -53,7 +53,6 @@ class WorkoutAPI(doobieRepo: WorkoutDoobieRepo) {
     for {
       ws <- doobieRepo.find(userId)
       r <- ws
-        .flatMap(WorkoutDoobieRepo.toWorkout)
         .filter(_.status == Active)
         .lastOption
         .map(w => Ok(w.asJson))
@@ -65,7 +64,7 @@ class WorkoutAPI(doobieRepo: WorkoutDoobieRepo) {
     val defaultW = Workout(randomUUID, userId, Active, 1, 1, List())
     for {
       ws <- doobieRepo.find(userId)
-      w = ws.flatMap(WorkoutDoobieRepo.toWorkout).lastOption.map(nextWorkout).getOrElse(defaultW)
+      w = ws.lastOption.map(nextWorkout).getOrElse(defaultW)
       _ <- doobieRepo.save(userId, w)
       r <- Ok(w.asJson)
     } yield r
@@ -74,7 +73,7 @@ class WorkoutAPI(doobieRepo: WorkoutDoobieRepo) {
   def logExerciseForWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     for {
       ws <- doobieRepo.find(userId)
-      w = ws.flatMap(WorkoutDoobieRepo.toWorkout).filter(_.status == Active).last
+      w = ws.filter(_.status == Active).last
       c <- req.as[CompleteExercise]
       e <- fromEither(decide(c))
       _ <- doobieRepo.save(userId, WorkoutService.apply(e)(w))
@@ -85,7 +84,7 @@ class WorkoutAPI(doobieRepo: WorkoutDoobieRepo) {
   def completeWorkout(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     for {
       ws <- doobieRepo.find(userId)
-      w = ws.flatMap(WorkoutDoobieRepo.toWorkout).filter(_.status == Active).last.copy(status = Status.Completed)
+      w = ws.filter(_.status == Active).last.copy(status = Status.Completed)
       _ <- doobieRepo.save(userId, w)
       r <- Accepted(w.asJson)
     } yield r

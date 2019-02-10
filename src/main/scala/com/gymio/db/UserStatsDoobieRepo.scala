@@ -18,8 +18,8 @@ class UserStatsDoobieRepo(transactor: Transactor[IO]) {
   def find(userId: UUID) = {
     sql"SELECT * from user_stats"
       .query[UserStatsDoobieRepo.UserStatsRecord]
-      .unique
-      .map(UserStatsDoobieRepo.toUserStats)
+      .option
+      .map(_.flatMap(UserStatsDoobieRepo.toUserStats))
       .transact(transactor)
   }
 
@@ -44,7 +44,7 @@ object UserStatsDoobieRepo {
     UserStatsRecord(userId, w.asJson, now)
   }
 
-  def toUserStats(w: UserStatsRecord): Seq[UserStats] = {
-    w.data.as[UserStats].toSeq
+  def toUserStats(w: UserStatsRecord): Option[UserStats] = {
+    w.data.as[UserStats].toOption
   }
 }
