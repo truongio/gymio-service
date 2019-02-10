@@ -15,7 +15,7 @@ object UserStatsAPI {
   val root = "/user-stats"
 }
 
-class UserStatsAPI(repo: UserStatsDoobieRepo) {
+class UserStatsAPI(userStatsRepo: UserStatsDoobieRepo) {
 
   val userStatsAPI: HttpRoutes[IO] = HttpRoutes
     .of[IO] {
@@ -28,7 +28,7 @@ class UserStatsAPI(repo: UserStatsDoobieRepo) {
 
   def getUserStats(userId: UUID): IO[Response[IO]] = {
     for {
-      us <- repo.find(userId)
+      us <- userStatsRepo.find(userId)
       r  <- us.map(us => Ok(us.asJson)).getOrElse(NoContent())
     } yield r
   }
@@ -36,7 +36,7 @@ class UserStatsAPI(repo: UserStatsDoobieRepo) {
   def saveUserStats(req: Request[IO], userId: UUID): IO[Response[IO]] = {
     for {
       us <- req.as[UserStats]
-      s  <- repo.save(userId, us)
+      s  <- userStatsRepo.save(userId, us)
       r  <- Accepted(s.asJson)
     } yield r
   }

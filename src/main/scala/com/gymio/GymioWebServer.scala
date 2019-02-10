@@ -20,7 +20,7 @@ object GymioWebServer extends IOApp {
 
     migrateDb(conf)
 
-    val doobieRepo = new WorkoutDoobieRepo(DatabaseDoobie.xa)
+    val workoutRepo = new WorkoutDoobieRepo(DatabaseDoobie.xa)
     val userStatsRepo = new UserStatsDoobieRepo(DatabaseDoobie.xa)
 
     val methodConfig = CORSConfig(
@@ -33,7 +33,7 @@ object GymioWebServer extends IOApp {
 
     val httpApp =
       Router(
-        WorkoutAPI.root   -> CORS(new WorkoutAPI(doobieRepo).workoutAPI, methodConfig),
+        WorkoutAPI.root   -> CORS(new WorkoutAPI(workoutRepo).workoutAPI, methodConfig),
         UserStatsAPI.root -> CORS(new UserStatsAPI(userStatsRepo).userStatsAPI, methodConfig),
         "/"               -> CORS(HealthCheckAPI.healthCheckAPI)
       ).orNotFound
