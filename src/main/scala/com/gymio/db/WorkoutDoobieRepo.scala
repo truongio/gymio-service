@@ -17,20 +17,6 @@ import io.circe.syntax._
 import org.postgresql.util.PGobject
 
 class WorkoutDoobieRepo(transactor: Transactor[IO]) {
-
-  implicit val jsonGet: Get[Json] =
-    Get.Advanced.other[PGobject](NonEmptyList.of("json")).tmap[Json] { o =>
-      parse(o.getValue).leftMap[Json](throw _).merge
-    }
-
-  implicit val jsonPut: Put[Json] =
-    Put.Advanced.other[PGobject](NonEmptyList.of("json")).tcontramap[Json] { j =>
-      val o = new PGobject
-      o.setType("json")
-      o.setValue(j.noSpaces)
-      o
-    }
-
   def find(userId: UUID) = {
     sql"SELECT * from workout"
       .query[WorkoutDoobieRepo.WorkoutRecord]
