@@ -12,9 +12,7 @@ import doobie.implicits._
 import doobie.postgres.implicits._
 import doobie.util.transactor.Transactor
 import io.circe.Json
-import io.circe.parser._
 import io.circe.syntax._
-import org.postgresql.util.PGobject
 
 class UserStatsDoobieRepo(transactor: Transactor[IO]) {
   def find(userId: UUID) = {
