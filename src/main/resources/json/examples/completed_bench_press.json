@@ -1,5 +1,5 @@
 {
-  "eventType": "CompleteBenchPress",
+  "exercise": "BENCH_PRESS",
   "reps": 5,
   "weight": {
     "value": 50,
