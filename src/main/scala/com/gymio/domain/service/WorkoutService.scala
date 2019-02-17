@@ -22,7 +22,8 @@ object WorkoutService {
     )
 
   def progress(w: Workout, exercises: Seq[Exercise]): Seq[(Exercise, Int)] = {
-    val r = w.completedExercises
+    val r = w
+      .completedExercises
       .collect { case e: ExerciseCompleted => e }
       .groupBy(_.exercise)
 

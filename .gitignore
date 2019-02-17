@@ -3,3 +3,6 @@ target
 *.class
 .DS_Store
 out
+.bloop/
+.metals/
+.ensime*

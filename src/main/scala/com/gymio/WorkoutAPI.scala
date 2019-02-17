@@ -75,8 +75,8 @@ class WorkoutAPI(workoutRepo: WorkoutDoobieRepo) {
       w = ws.filter(_.status == Active).last
       c <- req.as[CompleteExercise]
       e <- fromEither(decide(c))
-      _ <- workoutRepo.save(userId, WorkoutService.apply(e)(w))
-      r <- Accepted(w.asJson)
+      saved <- workoutRepo.save(userId, WorkoutService.apply(e)(w))
+      r <- Accepted(saved.asJson)
     } yield r
   }
 
@@ -88,5 +88,4 @@ class WorkoutAPI(workoutRepo: WorkoutDoobieRepo) {
       r <- Accepted(w.asJson)
     } yield r
   }
-
 }

@@ -23,19 +23,19 @@ class WorkoutDoobieRepo(transactor: Transactor[IO]) {
       .transact(transactor)
   }
 
-  def save(userId: UUID, w: Workout): IO[Int] = {
+  def save(userId: UUID, w: Workout): IO[Workout] = {
     val record = WorkoutDoobieRepo.toRecord(userId, w)
     sql"""
          INSERT into workout (id, user_id, data, timestamp)
          VALUES (${record.id}, $userId, ${record.data}, ${record.timestamp})
          ON CONFLICT (id)
          DO UPDATE
-         SET user_id = $userId,
-             data = ${record.data},
+         SET data = ${record.data},
              timestamp = ${record.timestamp}
       """
       .update
       .run
+      .map(_ => w)
       .transact(transactor)
 
   }
