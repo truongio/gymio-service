@@ -58,7 +58,7 @@ object WorkoutService {
       progress    <- incompleteExerciseProgress(w.completedExercises, exercises)
       set         <- scheme.sets.lift(progress._2 + 1)
       trainingMax <- stats.trainingMaxes.get(exercise.entryName)
-    } yield Weight(trainingMax.value * set.weightPercentage, trainingMax.unit)
+    } yield trainingMax.copy(value = trainingMax.value * set.weightPercentage)
   }
 
   def nextWorkout(w: Workout): Workout = {
